@@ -1,2 +1,2 @@
 # maap-input-parser
-Syntax parser for MAAP INP files
+Syntax parser for MAAP5 INP files

@@ -84,7 +84,7 @@ Parameter = index:[0-9]+ _ flag:(BooleanLiteral / _)? value:FreeCharacter* {
         value: value.join(''),
     }
 }
-TimerLiteral = TIMER _ "#" n:[0-9]+ {
+TimerLiteral = TIMER _ "#"? n:[0-9]+ {
 	return {
     	type: "timer",
         value: Number(n.join('')),

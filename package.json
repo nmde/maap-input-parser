@@ -1,0 +1,43 @@
+{
+  "name": "maap-input-parser",
+  "version": "0.1.0",
+  "description": "Syntax parser for MAAP INP files",
+  "main": "dist/maap-inp-parser.js",
+  "packageManager": "yarn@3.2.1",
+  "type": "module",
+  "scripts": {
+    "test": "node .yarn/releases/yarn-3.2.1.cjs jest",
+    "build": "node .yarn/releases/yarn-3.2.1.cjs webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nmde/maap-input-parser.git"
+  },
+  "keywords": [
+    "MAAP"
+  ],
+  "author": "nmde",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nmde/maap-input-parser/issues"
+  },
+  "homepage": "https://github.com/nmde/maap-input-parser#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0",
+    "eslint": "^8.18.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsdoc": "^39.3.3",
+    "eslint-plugin-sort-class-members": "^1.14.1",
+    "eslint-plugin-tsdoc": "^0.2.16",
+    "file-loader": "^6.2.0",
+    "nmde-common": "https://github.com/nmde/nmde-common.git#a849fb5eb5054983c3393cb046b7c45651bd44c4",
+    "typescript": "^4.7.4",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "dependencies": {
+    "peggy": "^1.2.0"
+  }
+}

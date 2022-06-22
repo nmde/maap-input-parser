@@ -302,10 +302,18 @@ PlotFilStatement = PLOTFIL _ n:[0-9]+ __ value:PlotFilBody? __ END {
     }
 }
 PlotFilList = head:(CallExpression / ExpressionMember) tail:(_ "," _ PlotFilList)* {
-	return [head].concat(extractList(tail, 3));
+	let value = [head];
+    if (tail && tail.length > 0) {
+    	value = value.concat(extractList(tail, 3)[0]);
+    }
+	return value;
 }
 PlotFilBody = head:PlotFilList tail:(__ PlotFilBody)* {
-	return [head].concat(extractList(tail, 1));
+	let value = [head];
+    if (tail && tail.length > 0) {
+    	value = value.concat(extractList(tail, 1)[0]);
+    }
+	return value;
 }
 UserEvtStatement = USEREVT __ value:UserEvtBody? __ END {
 	return {

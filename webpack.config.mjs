@@ -8,7 +8,6 @@ export default frontend(
   {
     output: {
       library: {
-        name: 'maapInpParser',
         type: 'commonjs',
       },
       publicPath: ''
@@ -17,7 +16,7 @@ export default frontend(
       rules: [
         {
           test: /\.pegjs$/,
-          loader: 'raw-loader',
+          type: 'asset/source',
         },
       ],
     },

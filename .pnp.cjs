@@ -49,7 +49,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jest", "virtual:cd6c56a667f71c219ece2fa9e5c888802ce463320a6e0d3b7f7787f2b175086075bde39e5a8e63af7c8444aee676f143792f2dcb05181d1861fa80ef97da30da#npm:28.1.1"],\
             ["nmde-common", "https://github.com/nmde/nmde-common.git#commit=0065f98ba13a23b81035f216e0b8396016610cf1"],\
             ["peggy", "npm:1.2.0"],\
-            ["raw-loader", "virtual:87b45fcdfc8cc8d3fe8a912c4d3bafcffbbff3eb007c78ed31611a8d43054192623e2f5eca49593a1b936c0c31dcf8e11c727e93257b4bee799d2dcf53636003#npm:4.0.2"],\
             ["ts-jest", "virtual:87b45fcdfc8cc8d3fe8a912c4d3bafcffbbff3eb007c78ed31611a8d43054192623e2f5eca49593a1b936c0c31dcf8e11c727e93257b4bee799d2dcf53636003#npm:28.0.5"],\
             ["ts-loader", "virtual:87b45fcdfc8cc8d3fe8a912c4d3bafcffbbff3eb007c78ed31611a8d43054192623e2f5eca49593a1b936c0c31dcf8e11c727e93257b4bee799d2dcf53636003#npm:9.3.1"],\
             ["typescript", "patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=7ad353"],\
@@ -7565,7 +7564,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jest", "virtual:cd6c56a667f71c219ece2fa9e5c888802ce463320a6e0d3b7f7787f2b175086075bde39e5a8e63af7c8444aee676f143792f2dcb05181d1861fa80ef97da30da#npm:28.1.1"],\
             ["nmde-common", "https://github.com/nmde/nmde-common.git#commit=0065f98ba13a23b81035f216e0b8396016610cf1"],\
             ["peggy", "npm:1.2.0"],\
-            ["raw-loader", "virtual:87b45fcdfc8cc8d3fe8a912c4d3bafcffbbff3eb007c78ed31611a8d43054192623e2f5eca49593a1b936c0c31dcf8e11c727e93257b4bee799d2dcf53636003#npm:4.0.2"],\
             ["ts-jest", "virtual:87b45fcdfc8cc8d3fe8a912c4d3bafcffbbff3eb007c78ed31611a8d43054192623e2f5eca49593a1b936c0c31dcf8e11c727e93257b4bee799d2dcf53636003#npm:28.0.5"],\
             ["ts-loader", "virtual:87b45fcdfc8cc8d3fe8a912c4d3bafcffbbff3eb007c78ed31611a8d43054192623e2f5eca49593a1b936c0c31dcf8e11c727e93257b4bee799d2dcf53636003#npm:9.3.1"],\
             ["typescript", "patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=7ad353"],\
@@ -8460,30 +8458,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["randombytes", "npm:2.1.0"],\
             ["safe-buffer", "npm:5.2.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["raw-loader", [\
-        ["npm:4.0.2", {\
-          "packageLocation": "./.yarn/cache/raw-loader-npm-4.0.2-94da6c700d-51cc1b0d0e.zip/node_modules/raw-loader/",\
-          "packageDependencies": [\
-            ["raw-loader", "npm:4.0.2"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:87b45fcdfc8cc8d3fe8a912c4d3bafcffbbff3eb007c78ed31611a8d43054192623e2f5eca49593a1b936c0c31dcf8e11c727e93257b4bee799d2dcf53636003#npm:4.0.2", {\
-          "packageLocation": "./.yarn/__virtual__/raw-loader-virtual-52b17ee119/0/cache/raw-loader-npm-4.0.2-94da6c700d-51cc1b0d0e.zip/node_modules/raw-loader/",\
-          "packageDependencies": [\
-            ["raw-loader", "virtual:87b45fcdfc8cc8d3fe8a912c4d3bafcffbbff3eb007c78ed31611a8d43054192623e2f5eca49593a1b936c0c31dcf8e11c727e93257b4bee799d2dcf53636003#npm:4.0.2"],\
-            ["@types/webpack", null],\
-            ["loader-utils", "npm:2.0.2"],\
-            ["schema-utils", "npm:3.1.1"],\
-            ["webpack", "virtual:87b45fcdfc8cc8d3fe8a912c4d3bafcffbbff3eb007c78ed31611a8d43054192623e2f5eca49593a1b936c0c31dcf8e11c727e93257b4bee799d2dcf53636003#npm:5.73.0"]\
-          ],\
-          "packagePeers": [\
-            "@types/webpack",\
-            "webpack"\
           ],\
           "linkType": "HARD"\
         }]\

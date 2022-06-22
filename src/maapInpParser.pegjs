@@ -57,7 +57,7 @@ BooleanLiteral = v:(TRUE / FALSE / T / F) ![a-zA-Z] {
     }
 }
 Reserved = (END / IS) ![a-zA-Z]
-Identifier = !Reserved value:[a-zA-Z0-9]+ {
+Identifier = !Reserved value:[a-zA-Z0-9:]+ {
 	return {
     	type: "identifier",
         value: value.join(''),
@@ -111,6 +111,7 @@ INCLUDE = "INCLUDE"i
 INITIATORS = "INITIATOR"i "S"i?
 IF = "IF"i
 IS = "IS"i
+LOOKUP_VARIABLE = "LOOKUP VARIABLE"i
 OFF = "OFF"i
 ON = "ON"i
 PARAMETER_CHANGE = "PARAMETER CHANGE"i
@@ -151,7 +152,7 @@ CallExpression = name:Identifier _ "(" args:Arguments ")" {
         },
     }
 }
-ExpressionOperator = "**" / "*" / "/" / ">=" / "<=" / ">" / "<"
+ExpressionOperator = "**" / "*" / "/" / ">=" / "<=" / ">" / "<" / "+" / "-"
 Expression = left:ExpressionType _ op:ExpressionOperator _ right:(Expression / ExpressionType) {
 	return {
     	type: "expression",
@@ -216,6 +217,7 @@ Statement = SensitivityStatement
     / UserEvtStatement
     / FunctionStatement
     / TimerStatement
+    / LookupStatement
 SensitivityStatement = SENSITIVITY __ value:(ON / OFF) {
 	return {
     	type: "sensitivity",
@@ -333,6 +335,16 @@ TimerStatement = SET _ value:TimerLiteral {
     	type: "set_timer",
         value,
     }
+}
+LookupStatement = LOOKUP_VARIABLE _ name:Variable __ value:LookupBody? __ END {
+	return {
+    	type: "lookup_variable",
+        name,
+        value,
+    }
+}
+LookupBody = !Reserved head:FreeCharacter+ tail:(__ LookupBody)* {
+	return [head].concat(extractList(tail, 1));
 }
 
 /* Program blocks */

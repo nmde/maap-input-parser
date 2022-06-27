@@ -12,6 +12,7 @@ export default frontend(
       },
       publicPath: ''
     },
+    mode: 'production',
     module: {
       rules: [
         {

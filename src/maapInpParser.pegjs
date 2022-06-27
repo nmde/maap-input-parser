@@ -57,23 +57,14 @@ BooleanLiteral = v:(TRUE / FALSE / T / F) ![a-zA-Z] {
     }
 }
 Reserved = (END / IS) ![a-zA-Z]
-Identifier = !Reserved value:[a-zA-Z0-9:]+ {
+Identifier = !Reserved head:[a-zA-Z0-9:]+ tail:(" " Identifier)? {
+	let value = head.join('');
+    if (tail) {
+    	value += " " + tail[1].value;
+    }
 	return {
     	type: "identifier",
-        value: value.join(''),
-    }
-}
-ParameterName = !Reserved first:Identifier index:("(" [0-9]+ ")")? rest:(_ ParameterName)? {
-	let name = first.value;
-    if (index) {
-    	name += index.join('');
-    }
-	if (rest) {
-    	name += ' ' + rest[1].value;
-    }
-    return {
-    	type: "parameter_name",
-        value: name,
+        value,
     }
 }
 Parameter = index:[0-9]+ _ flag:(BooleanLiteral / _)? value:FreeCharacter* {
@@ -177,7 +168,7 @@ Assignment = target:(CallExpression / Identifier) _ "=" _ value:Expr {
         value,
     }
 }
-IsExpression = target:(ParameterName / CallExpression / Identifier) _ IS _ value:Expr {
+IsExpression = target:(CallExpression / Identifier) _ IS _ value:Expr {
 	return {
     	type: "is_expression",
         value: {
@@ -186,9 +177,10 @@ IsExpression = target:(ParameterName / CallExpression / Identifier) _ IS _ value
         },
     }
 }
-AsExpression = target:(CallExpression / Identifier) _ AS _ value:ParameterName {
+AsExpression = target:(CallExpression / Identifier) _ AS _ value:Identifier {
 	return {
     	type: "as_expression",
+        target,
         value,
     }
 }
@@ -249,7 +241,7 @@ IncludeStatement = INCLUDE _ v:FreeCharacter+ {
         value: extractList(v, 1).join(''),
     }
 }
-ParameterChangeStatement = PARAMETER_CHANGE __ value:StatementElements? __ END {
+ParameterChangeStatement = PARAMETER_CHANGE __ value:SourceElements? __ END {
 	return {
     	type: "parameter_change",
         value: value || [],
@@ -268,31 +260,34 @@ PrintIntervalStatement = PRINT_INTERVAL _ IS _ value:NumericLiteral _? "."? {
         value,
     }
 }
-InitiatorsStatement = INITIATORS __ value:StatementElements? __ END {
+InitiatorsStatement = INITIATORS __ value:SourceElements? __ END {
 	return {
     	type: "initiators",
         value: value || [],
     }
 }
-WhenStatement = WHEN _ test:Expr __ value:StatementElements? __ END {
+WhenStatement = WHEN _ test:Expr __ value:SourceElements? __ END {
 	return {
     	type: "when",
         test,
         value: value || [],
     }
 }
-IfStatement = IF _ test:Expr __ value:StatementElements? __ END {
+IfStatement = IF _ test:Expr __ value:SourceElements? __ END {
 	return {
     	type: "if",
         test,
         value: value || [],
     }
 }
-AliasStatement = ALIAS __ value:SourceElements? __ END {
+AliasStatement = ALIAS __ value:AliasBody? __ END {
 	return {
     	type: "alias",
         value,
     }
+}
+AliasBody = head:AsExpression tail:(__ AsExpression)* {
+	return head;
 }
 PlotFilStatement = PLOTFIL _ n:[0-9]+ __ value:PlotFilBody? __ END {
 	return {
@@ -366,7 +361,3 @@ SourceElements = head:SourceElement tail:(__ SourceElement)* {
 	return [head].concat(extractList(tail, 1));
 }
 SourceElement = Statement / Assignment / Expr / AsExpression
-StatementElements = head:StatementElement tail:(__ StatementElement)* {
-	return [head].concat(extractList(tail, 1));
-}
-StatementElement = SourceElement / ParameterName

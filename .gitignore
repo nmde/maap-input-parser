@@ -9,7 +9,3 @@
 # Documentation here: https://yarnpkg.com/features/zero-installs
 !.yarn/cache
 #.pnp.*
-
-# Files temporarily used for testing
-# TODO - Replace with example files that can be published to the repo
-tests/test-data

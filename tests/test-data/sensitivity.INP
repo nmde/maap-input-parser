@@ -1,0 +1,12 @@
+** Tests sensitivity statements **
+
+C Default
+C The only way I've ever seen this written in practice
+SENSITIVITY ON
+
+C Alternate value
+SENSITIVITY OFF
+
+C No value
+C Should parse as an identifier, not a sensitivity statement
+SENSITIVITY

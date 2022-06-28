@@ -1,6 +1,6 @@
-import peggy from 'peggy';
+import { generate } from 'peggy';
 import maapInpParser from './maapInpParser.pegjs';
 
-export default peggy.generate(maapInpParser, {
+export default generate(maapInpParser, {
   output: 'parser',
 });

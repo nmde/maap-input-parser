@@ -56,7 +56,7 @@ BooleanLiteral = v:(TRUE / FALSE / T / F) ![a-zA-Z] {
         value,
     }
 }
-Reserved = (END / IS) ![a-zA-Z]
+Reserved = (END / IS / AS) ![a-zA-Z]
 Identifier = !Reserved head:[a-zA-Z0-9:]+ tail:(" " Identifier)? {
 	let value = head.join('');
     if (tail) {
@@ -72,7 +72,7 @@ Parameter = index:[0-9]+ _ flag:(BooleanLiteral / _)? value:FreeCharacter* {
     	type: "parameter",
     	index: Number(index.join('')),
         flag,
-        value: value.join(''),
+        value: extractList(value, 1).join('').trim(),
     }
 }
 TimerLiteral = TIMER _ "#"? n:[0-9]+ {
@@ -287,7 +287,7 @@ AliasStatement = ALIAS __ value:AliasBody? __ END {
     }
 }
 AliasBody = head:AsExpression tail:(__ AsExpression)* {
-	return head;
+	return [head].concat(extractList(tail, 1));
 }
 PlotFilStatement = PLOTFIL _ n:[0-9]+ __ value:PlotFilBody? __ END {
 	return {
@@ -323,6 +323,7 @@ UserEvtElement = Parameter / ActionStatement / SourceElement
 ActionStatement = ACTION _ "#" n:[0-9]+ __ value:UserEvtBody? __ END {
 	return {
     	type: "action",
+        index: Number(n.join('')),
         value: value || [],
     }
 }
@@ -347,7 +348,11 @@ LookupStatement = LOOKUP_VARIABLE _ name:Variable __ value:LookupBody? __ END {
     }
 }
 LookupBody = !Reserved head:FreeCharacter+ tail:(__ LookupBody)* {
-	return [head].concat(extractList(tail, 1));
+	let value = [extractList(head, 1).join('')];
+    if (tail && tail.length > 0) {
+    	value = value.concat(extractList(tail, 1)[0]);
+    }
+	return value;
 }
 
 /* Program blocks */

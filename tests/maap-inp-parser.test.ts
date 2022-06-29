@@ -19,6 +19,68 @@ beforeAll(async () => {
   maapInpParser.options.safeMode = false;
 });
 
+describe('expressions', () => {
+  test('is expression', async () => {
+    const program = maapInpParser.parse(await readTestData('is.INP')).output
+      .value;
+    expect(program[0]).toStrictEqual({
+      type: 'is_expression',
+      value: {
+        target: {
+          type: 'identifier',
+          value: 'VARNAME',
+        },
+        value: {
+          type: 'identifier',
+          value: 'Value',
+        },
+      },
+    });
+    expect(program[1]).toStrictEqual({
+      type: 'is_expression',
+      value: {
+        target: {
+          type: 'identifier',
+          value: 'START TIME',
+        },
+        value: {
+          type: 'number',
+          units: undefined,
+          value: 0,
+        },
+      },
+    });
+    expect(program[2]).toStrictEqual({
+      type: 'is_expression',
+      value: {
+        target: {
+          type: 'identifier',
+          value: 'END TIME',
+        },
+        value: {
+          type: 'number',
+          units: undefined,
+          value: 144000,
+        },
+      },
+    });
+    expect(program[3]).toStrictEqual({
+      type: 'is_expression',
+      value: {
+        target: {
+          type: 'identifier',
+          value: 'PRINT INTERVAL',
+        },
+        value: {
+          type: 'number',
+          units: undefined,
+          value: 5000,
+        },
+      },
+    });
+  });
+});
+
 describe('statements', () => {
   test('sensitivity statements', async () => {
     const program = maapInpParser.parse(await readTestData('sensitivity.INP'))

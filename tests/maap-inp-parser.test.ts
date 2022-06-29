@@ -41,7 +41,9 @@ describe('safeMode', () => {
     const safeMode = await readTestData('safeMode.INP');
     // Safe mode off
     expect(() => {
-      maapInpParser.parse(safeMode);
+      maapInpParser.parse(safeMode, {
+        safeMode: false,
+      });
     }).toThrow();
     // Safe mode on
     const safeParsed = maapInpParser.parse(safeMode, {

@@ -1,4 +1,4 @@
-import { Parser } from 'peggy';
+import type { Parser } from 'peggy';
 import safeMode from './safeMode';
 import { MAAPInpParser } from './types';
 

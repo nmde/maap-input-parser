@@ -1,9 +1,7 @@
-import { generate } from 'peggy';
-import maapInpParser from './maapInpParser.pegjs';
+import parser from '../dist/parser';
 import wrapper from './wrapper';
 
+// The parser file must be rebuilt manually!
 export default wrapper(
-  generate(maapInpParser, {
-    output: 'parser',
-  }),
+  parser,
 );

@@ -1,4 +1,4 @@
-import PEG, { ParserOptions } from 'peggy';
+import type { ParserOptions } from 'peggy';
 
 export type WrapperOptions = ParserOptions & {
   safeMode?: boolean;

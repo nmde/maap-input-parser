@@ -1,4 +1,4 @@
-import PEG, { Parser } from 'peggy';
+import type { Parser } from 'peggy';
 import type { MAAPInpParserOutput, WrapperOptions } from './types';
 
 /**

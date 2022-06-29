@@ -69,9 +69,9 @@ Identifier = !Reserved head:[a-zA-Z0-9:]+ tail:(" " Identifier)? {
 }
 Parameter = index:[0-9]+ _ flag:(BooleanLiteral / _)? value:FreeCharacter* {
 	return {
+    	flag,
+        index: Number(index.join('')),
     	type: "parameter",
-    	index: Number(index.join('')),
-        flag,
         value: extractList(value, 1).join('').trim(),
     }
 }
@@ -256,8 +256,8 @@ AliasBody = head:AsExpression tail:(__ AsExpression)* {
 }
 PlotFilStatement = PLOTFIL _ n:[0-9]+ __ value:PlotFilBody? __ END {
 	return {
+    	n: Number(n.join('')),
     	type: "plotfil",
-        n: Number(n.join('')),
         value,
     }
 }
@@ -287,15 +287,15 @@ UserEvtBody = head:UserEvtElement tail:(__ UserEvtElement)* {
 UserEvtElement = Parameter / ActionStatement / SourceElement
 ActionStatement = ACTION _ "#" n:[0-9]+ __ value:UserEvtBody? __ END {
 	return {
+    	index: Number(n.join('')),
     	type: "action",
-        index: Number(n.join('')),
         value: value || [],
     }
 }
 FunctionStatement = FUNCTION _ name:Identifier _ "=" _ value:Expr {
 	return {
+    	name,
     	type: "function",
-        name,
         value,
     }
 }
@@ -307,8 +307,8 @@ TimerStatement = SET _ value:TimerLiteral {
 }
 LookupStatement = LOOKUP_VARIABLE _ name:Variable __ value:LookupBody? __ END {
 	return {
+		name,
     	type: "lookup_variable",
-        name,
         value,
     }
 }

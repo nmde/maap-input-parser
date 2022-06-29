@@ -152,10 +152,9 @@ multiple lines`,
       value: 'INCLUDE',
     });
   });
-  test('parameter change statements', async () => {
-    const program = maapInpParser.parse(
-      await readTestData('parameterChange.INP'),
-    ).output.value;
+  test('block statements', async () => {
+    const program = maapInpParser.parse(await readTestData('block.INP')).output
+      .value;
     expect(program[0]).toStrictEqual({
       blockType: 'PARAMETER CHANGE',
       type: 'block',
@@ -193,6 +192,86 @@ multiple lines`,
     });
     expect(program[2]).toStrictEqual({
       blockType: 'PARAMETER CHANGE',
+      type: 'block',
+      value: [
+        {
+          blockType: 'IF',
+          test: {
+            type: 'is_expression',
+            value: {
+              target: {
+                type: 'call_expression',
+                value: {
+                  arguments: [
+                    {
+                      type: 'number',
+                      units: undefined,
+                      value: 1,
+                    },
+                  ],
+                  name: {
+                    type: 'identifier',
+                    value: 'VarName',
+                  },
+                },
+              },
+              value: {
+                type: 'number',
+                units: undefined,
+                value: 1,
+              },
+            },
+          },
+          type: 'conditional_block',
+          value: [
+            {
+              type: 'set_timer',
+              value: {
+                type: 'timer',
+                value: 1,
+              },
+            },
+          ],
+        },
+      ],
+    });
+    expect(program[3]).toStrictEqual({
+      blockType: 'INITIATORS',
+      type: 'block',
+      value: [
+        {
+          target: {
+            type: 'call_expression',
+            value: {
+              arguments: [
+                {
+                  type: 'number',
+                  units: undefined,
+                  value: 1,
+                },
+              ],
+              name: {
+                type: 'identifier',
+                value: 'VarName',
+              },
+            },
+          },
+          type: 'assignment',
+          value: {
+            type: 'number',
+            units: undefined,
+            value: 1,
+          },
+        },
+      ],
+    });
+    expect(program[4]).toStrictEqual({
+      blockType: 'INITIATORS',
+      type: 'block',
+      value: [],
+    });
+    expect(program[5]).toStrictEqual({
+      blockType: 'INITIATORS',
       type: 'block',
       value: [
         {
@@ -237,87 +316,301 @@ multiple lines`,
       ],
     });
   });
-  test('initiators statements', async () => {
-    const program = maapInpParser.parse(await readTestData('initiators.INP'))
-      .output.value;
+  test('conditional block statements', async () => {
+    const program = maapInpParser.parse(
+      await readTestData('conditionalBlock.INP'),
+    ).output.value;
     expect(program[0]).toStrictEqual({
-      blockType: 'INITIATORS',
-      type: 'block',
+      blockType: 'WHEN',
+      test: {
+        type: 'is_expression',
+        value: {
+          target: {
+            type: 'identifier',
+            value: 'VARIABLE',
+          },
+          value: {
+            type: 'boolean',
+            value: true,
+          },
+        },
+      },
+      type: 'conditional_block',
       value: [
         {
           target: {
-            type: 'call_expression',
-            value: {
-              arguments: [
-                {
-                  type: 'number',
-                  units: undefined,
-                  value: 1,
-                },
-              ],
-              name: {
-                type: 'identifier',
-                value: 'VarName',
-              },
-            },
+            type: 'identifier',
+            value: 'VARNAME',
           },
           type: 'assignment',
           value: {
             type: 'number',
             units: undefined,
-            value: 1,
+            value: 1000,
           },
         },
       ],
     });
     expect(program[1]).toStrictEqual({
-      blockType: 'INITIATORS',
-      type: 'block',
+      blockType: 'WHEN',
+      test: {
+        type: 'is_expression',
+        value: {
+          target: {
+            type: 'identifier',
+            value: 'VARIABLE',
+          },
+          value: {
+            type: 'boolean',
+            value: true,
+          },
+        },
+      },
+      type: 'conditional_block',
       value: [],
     });
     expect(program[2]).toStrictEqual({
-      blockType: 'INITIATORS',
-      type: 'block',
+      blockType: 'IF',
+      test: {
+        type: 'is_expression',
+        value: {
+          target: {
+            type: 'identifier',
+            value: 'VARIABLE',
+          },
+          value: {
+            type: 'boolean',
+            value: true,
+          },
+        },
+      },
+      type: 'conditional_block',
       value: [
         {
-          blockType: 'IF',
-          test: {
-            type: 'is_expression',
+          target: {
+            type: 'identifier',
+            value: 'VARNAME',
+          },
+          type: 'assignment',
+          value: {
+            type: 'number',
+            units: undefined,
+            value: 1000,
+          },
+        },
+      ],
+    });
+    expect(program[3]).toStrictEqual({
+      blockType: 'IF',
+      test: {
+        type: 'is_expression',
+        value: {
+          target: {
+            type: 'identifier',
+            value: 'VARIABLE',
+          },
+          value: {
+            type: 'boolean',
+            value: true,
+          },
+        },
+      },
+      type: 'conditional_block',
+      value: [],
+    });
+  });
+  test('alias statements', async () => {
+    const program = maapInpParser.parse(await readTestData('alias.INP')).output
+      .value;
+    expect(program[0]).toStrictEqual({
+      type: 'alias',
+      value: [
+        {
+          target: {
+            type: 'identifier',
+            value: 'VARNAME',
+          },
+          type: 'as_expression',
+          value: {
+            type: 'identifier',
+            value: 'Value',
+          },
+        },
+      ],
+    });
+    expect(program[1]).toStrictEqual({
+      type: 'alias',
+      value: null,
+    });
+  });
+  test('plotfil statements', async () => {
+    const program = maapInpParser.parse(await readTestData('plotfil.INP'))
+      .output.value;
+    expect(program[0]).toStrictEqual({
+      n: 3,
+      type: 'plotfil',
+      value: [
+        [
+          {
+            type: 'identifier',
+            value: 'A',
+          },
+          {
+            type: 'identifier',
+            value: 'B',
+          },
+          {
+            type: 'identifier',
+            value: 'C',
+          },
+        ],
+        [
+          {
+            type: 'identifier',
+            value: 'D',
+          },
+          {
+            type: 'identifier',
+            value: 'E',
+          },
+          {
+            type: 'boolean',
+            value: false,
+          },
+        ],
+        [
+          {
+            type: 'identifier',
+            value: 'G',
+          },
+          {
+            type: 'identifier',
+            value: 'H',
+          },
+          {
+            type: 'call_expression',
             value: {
-              target: {
-                type: 'call_expression',
-                value: {
-                  arguments: [
-                    {
-                      type: 'number',
-                      units: undefined,
-                      value: 1,
-                    },
-                  ],
-                  name: {
-                    type: 'identifier',
-                    value: 'VarName',
-                  },
+              arguments: [
+                {
+                  type: 'identifier',
+                  value: 'J',
                 },
-              },
-              value: {
-                type: 'number',
-                units: undefined,
-                value: 1,
+              ],
+              name: {
+                type: 'identifier',
+                value: 'I',
               },
             },
           },
-          type: 'conditional_block',
-          value: [
-            {
-              type: 'set_timer',
-              value: {
-                type: 'timer',
-                value: 1,
-              },
-            },
-          ],
+        ],
+      ],
+    });
+  });
+  test('userevt statements', async () => {
+    const program = maapInpParser.parse(await readTestData('userevt.INP'))
+      .output.value;
+    expect(program[0].type).toBe('user_evt');
+    expect(program[0].value[0]).toStrictEqual({
+      flag: {
+        type: 'boolean',
+        value: true,
+      },
+      index: 100,
+      type: 'parameter',
+      value: 'Parameter Name',
+    });
+    expect(program[0].value[1]).toStrictEqual({
+      flag: [],
+      index: 102,
+      type: 'parameter',
+      value: 'Parameter 2',
+    });
+    expect(program[0].value[2]).toStrictEqual({
+      index: 1,
+      type: 'action',
+      value: [
+        {
+          flag: [],
+          index: 103,
+          type: 'parameter',
+          value: 'Parameter 3',
         },
+        {
+          index: 2,
+          type: 'action',
+          value: [],
+        },
+      ],
+    });
+    expect(program[0].value[3]).toStrictEqual({
+      blockType: 'IF',
+      test: {
+        type: 'is_expression',
+        value: {
+          target: {
+            type: 'identifier',
+            value: 'VALUE',
+          },
+          value: {
+            type: 'boolean',
+            value: true,
+          },
+        },
+      },
+      type: 'conditional_block',
+      value: [],
+    });
+  });
+  test('function statements', async () => {
+    const program = maapInpParser.parse(await readTestData('function.INP'))
+      .output.value;
+    expect(program[0]).toStrictEqual({
+      name: {
+        type: 'identifier',
+        value: 'name',
+      },
+      type: 'function',
+      value: {
+        type: 'expression',
+        value: {
+          left: {
+            type: 'number',
+            units: undefined,
+            value: 1,
+          },
+          op: '+',
+          right: {
+            type: 'number',
+            units: undefined,
+            value: 1,
+          },
+        },
+      },
+    });
+  });
+  test('set timer statements', async () => {
+    const program = maapInpParser.parse(await readTestData('timer.INP')).output
+      .value;
+    expect(program[0]).toStrictEqual({
+      type: 'set_timer',
+      value: {
+        type: 'timer',
+        value: 1,
+      },
+    });
+  });
+  test('lookup variable statements', async () => {
+    const program = maapInpParser.parse(await readTestData('lookup.INP')).output
+      .value;
+    expect(program[0]).toStrictEqual({
+      name: {
+        type: 'identifier',
+        value: 'VariableName',
+      },
+      type: 'lookup_variable',
+      value: [
+        'You can type anything in here for now',
+        'It just gets separated by row',
       ],
     });
   });

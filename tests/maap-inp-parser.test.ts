@@ -86,6 +86,87 @@ multiple lines`,
       value: 'INCLUDE',
     });
   });
+  test('parameter change statements', async () => {
+    const program = maapInpParser.parse(
+      await readTestData('parameterChange.INP'),
+    ).output.value;
+    expect(program[0]).toStrictEqual({
+      type: 'parameter_change',
+      value: [
+        {
+          target: {
+            type: 'call_expression',
+            value: {
+              arguments: [
+                {
+                  type: 'number',
+                  units: undefined,
+                  value: 1,
+                },
+              ],
+              name: {
+                type: 'identifier',
+                value: 'VarName',
+              },
+            },
+          },
+          type: 'assignment',
+          value: {
+            type: 'number',
+            units: undefined,
+            value: 1,
+          },
+        },
+      ],
+    });
+    expect(program[1]).toStrictEqual({
+      type: 'parameter_change',
+      value: [],
+    });
+    expect(program[2]).toStrictEqual({
+      type: 'parameter_change',
+      value: [
+        {
+          test: {
+            type: 'is_expression',
+            value: {
+              target: {
+                type: 'call_expression',
+                value: {
+                  arguments: [
+                    {
+                      type: 'number',
+                      units: undefined,
+                      value: 1,
+                    },
+                  ],
+                  name: {
+                    type: 'identifier',
+                    value: 'VarName',
+                  },
+                },
+              },
+              value: {
+                type: 'number',
+                units: undefined,
+                value: 1,
+              },
+            },
+          },
+          type: 'if',
+          value: [
+            {
+              type: 'set_timer',
+              value: {
+                type: 'timer',
+                value: 1,
+              },
+            },
+          ],
+        },
+      ],
+    });
+  });
 });
 
 describe('program blocks', () => {

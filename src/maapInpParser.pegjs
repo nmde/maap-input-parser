@@ -30,8 +30,8 @@ Units = first:[a-zA-Z0-9]+ rest:(("**" / "/") Units)? {
 NumericLiteral = literal:DecimalLiteral !(IdentifierStart / DecimalDigit) units:(_ Units)? {
 	return {
     	type: "number",
-        value: literal,
         units: (units || [])[1],
+        value: literal,
     }
 }
 DecimalLiteral = DecimalIntegerLiteral "." DecimalDigit* ExponentPart? {
@@ -138,8 +138,8 @@ CallExpression = name:Identifier _ "(" args:Arguments? ")" {
 	return {
     	type: "call_expression",
         value: {
+        	arguments: args,
         	name,
-            arguments: args,
         },
     }
 }
@@ -163,8 +163,8 @@ ExpressionBlock = "(" value:Expression ")" {
 ExpressionType = CallExpression / ExpressionBlock / ExpressionMember
 Assignment = target:(CallExpression / Identifier) _ "=" _ value:Expr {
 	return {
+    	target,
     	type: "assignment",
-        target,
         value,
     }
 }
@@ -179,8 +179,8 @@ IsExpression = target:(CallExpression / Identifier) _ IS _ value:Expr {
 }
 AsExpression = target:(CallExpression / Identifier) _ AS _ value:Identifier {
 	return {
+    	target,
     	type: "as_expression",
-        target,
         value,
     }
 }
@@ -199,8 +199,6 @@ Statement = SensitivityStatement
         }
     }
     / ParameterChangeStatement
-    / TimeStatement
-    / PrintIntervalStatement
     / InitiatorsStatement
     / WhenStatement
     / IfStatement
@@ -247,19 +245,6 @@ ParameterChangeStatement = PARAMETER_CHANGE __ value:SourceElements? __ END {
         value: value || [],
     }
 }
-TimeStatement = time:(START_TIME / END_TIME) _ IS _ value:NumericLiteral _? "."? {
-	return {
-    	type: "time",
-        time,
-        value,
-    }
-}
-PrintIntervalStatement = PRINT_INTERVAL _ IS _ value:NumericLiteral _? "."? {
-	return {
-    	type: "print_interval",
-        value,
-    }
-}
 InitiatorsStatement = INITIATORS __ value:SourceElements? __ END {
 	return {
     	type: "initiators",
@@ -268,15 +253,15 @@ InitiatorsStatement = INITIATORS __ value:SourceElements? __ END {
 }
 WhenStatement = WHEN _ test:Expr __ value:SourceElements? __ END {
 	return {
+    	test,
     	type: "when",
-        test,
         value: value || [],
     }
 }
 IfStatement = IF _ test:Expr __ value:SourceElements? __ END {
 	return {
+    	test,
     	type: "if",
-        test,
         value: value || [],
     }
 }

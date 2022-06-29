@@ -6,7 +6,8 @@
   "packageManager": "yarn@3.2.1",
   "scripts": {
     "test": "node --experimental-vm-modules .yarn/releases/yarn-3.2.1.cjs jest",
-    "build": "node .yarn/releases/yarn-3.2.1.cjs gulp build"
+    "build": "node .yarn/releases/yarn-3.2.1.cjs gulp build",
+    "start": "node .yarn/releases/yarn-3.2.1.cjs vite"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,8 @@
     "@types/node": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
+    "@vitejs/plugin-vue": "^2.3.3",
+    "@vue/compiler-sfc": "^3.2.37",
     "babel-jest": "^28.1.1",
     "babel-loader": "^8.2.5",
     "eslint": "^8.18.0",
@@ -35,6 +38,7 @@
     "eslint-plugin-jsdoc": "^39.3.3",
     "eslint-plugin-sort-class-members": "^1.14.1",
     "eslint-plugin-tsdoc": "^0.2.16",
+    "eslint-plugin-vue": "^9.1.1",
     "gulp": "^4.0.2",
     "gulp-rename": "^2.0.0",
     "jest": "^28.1.1",
@@ -43,11 +47,17 @@
     "ts-jest": "^28.0.5",
     "ts-loader": "^9.3.1",
     "typescript": "^4.7.4",
+    "vite": "^2.9.13",
+    "vue-eslint-parser": "^9.0.3",
     "webpack": "^5.73.0",
     "webpack-cli": "^4.10.0",
+    "webpack-merge": "^5.8.0",
     "webpack-stream": "^7.0.0"
   },
   "dependencies": {
-    "peggy": "^1.2.0"
+    "peggy": "^1.2.0",
+    "primeicons": "^5.0.0",
+    "primevue": "^3.15.0",
+    "vue": "^3.2.37"
   }
 }

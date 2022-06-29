@@ -369,9 +369,9 @@ function peg$parse(input, options) {
   };
   var peg$f7 = function(index, flag, value) {
   	return {
+      	flag,
+          index: Number(index.join('')),
       	type: "parameter",
-      	index: Number(index.join('')),
-          flag,
           value: extractList(value, 1).join('').trim(),
       }
   };
@@ -500,8 +500,8 @@ function peg$parse(input, options) {
   };
   var peg$f27 = function(n, value) {
   	return {
+      	n: Number(n.join('')),
       	type: "plotfil",
-          n: Number(n.join('')),
           value,
       }
   };
@@ -527,15 +527,15 @@ function peg$parse(input, options) {
   };
   var peg$f31 = function(n, value) {
   	return {
+      	index: Number(n.join('')),
       	type: "action",
-          index: Number(n.join('')),
           value: value || [],
       }
   };
   var peg$f32 = function(name, value) {
   	return {
+      	name,
       	type: "function",
-          name,
           value,
       }
   };
@@ -547,8 +547,8 @@ function peg$parse(input, options) {
   };
   var peg$f34 = function(name, value) {
   	return {
+  		name,
       	type: "lookup_variable",
-          name,
           value,
       }
   };

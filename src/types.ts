@@ -16,5 +16,6 @@ export type MAAPInpParserOutput = {
 };
 
 export type MAAPInpParser = {
+  options: WrapperOptions;
   parse(input: string, options?: WrapperOptions): MAAPInpParserOutput;
 };

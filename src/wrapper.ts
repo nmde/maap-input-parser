@@ -9,9 +9,16 @@ import { MAAPInpParser } from './types';
  * @returns The wrapped parser.
  */
 export default function wrapper(parser: Parser): MAAPInpParser {
-  return {
+  const maapInpParser: MAAPInpParser = {
+    options: {
+      safeMode: true,
+    },
     parse: (input, options) => {
-      return safeMode(parser, input, options);
+      return safeMode(parser, input, {
+        ...maapInpParser.options,
+        ...options,
+      });
     },
   };
+  return maapInpParser;
 }

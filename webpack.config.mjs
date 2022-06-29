@@ -17,7 +17,8 @@ export default frontend(
     },
     output: {
       library: {
-        type: 'commonjs',
+        name: 'maapInpParser',
+        type: 'umd',
       },
       publicPath: '',
     },

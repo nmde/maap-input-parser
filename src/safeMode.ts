@@ -1,4 +1,4 @@
-import { Parser } from 'peggy';
+import PEG, { Parser } from 'peggy';
 import type { MAAPInpParserOutput, WrapperOptions } from './types';
 
 /**
@@ -14,7 +14,7 @@ export default function safeMode(
   parser: Parser,
   input: string,
   options?: WrapperOptions,
-  errors: Parser['SyntaxError'][] = [],
+  errors: PEG.parser.SyntaxError[] = [],
 ): MAAPInpParserOutput {
   try {
     return {
@@ -23,7 +23,7 @@ export default function safeMode(
       output: parser.parse(input, options),
     };
   } catch (err) {
-    const syntaxError = err as Parser['SyntaxError'];
+    const syntaxError = err as PEG.parser.SyntaxError;
     if (syntaxError.location && options?.safeMode !== false) {
       const inputLines = input.split('\n');
       const line = syntaxError.location.start.line - 1;

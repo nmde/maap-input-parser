@@ -54,6 +54,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jest", "virtual:cd6c56a667f71c219ece2fa9e5c888802ce463320a6e0d3b7f7787f2b175086075bde39e5a8e63af7c8444aee676f143792f2dcb05181d1861fa80ef97da30da#npm:28.1.1"],\
             ["nmde-common", "https://github.com/nmde/nmde-common.git#commit=0065f98ba13a23b81035f216e0b8396016610cf1"],\
             ["peggy", "npm:1.2.0"],\
+            ["primeflex", "npm:3.2.1"],\
             ["primeicons", "npm:5.0.0"],\
             ["primevue", "virtual:87b45fcdfc8cc8d3fe8a912c4d3bafcffbbff3eb007c78ed31611a8d43054192623e2f5eca49593a1b936c0c31dcf8e11c727e93257b4bee799d2dcf53636003#npm:3.15.0"],\
             ["through2", "npm:4.0.2"],\
@@ -9499,6 +9500,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jest", "virtual:cd6c56a667f71c219ece2fa9e5c888802ce463320a6e0d3b7f7787f2b175086075bde39e5a8e63af7c8444aee676f143792f2dcb05181d1861fa80ef97da30da#npm:28.1.1"],\
             ["nmde-common", "https://github.com/nmde/nmde-common.git#commit=0065f98ba13a23b81035f216e0b8396016610cf1"],\
             ["peggy", "npm:1.2.0"],\
+            ["primeflex", "npm:3.2.1"],\
             ["primeicons", "npm:5.0.0"],\
             ["primevue", "virtual:87b45fcdfc8cc8d3fe8a912c4d3bafcffbbff3eb007c78ed31611a8d43054192623e2f5eca49593a1b936c0c31dcf8e11c727e93257b4bee799d2dcf53636003#npm:3.15.0"],\
             ["through2", "npm:4.0.2"],\
@@ -10760,6 +10762,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/pretty-hrtime-npm-1.0.3-32fd75fcbd-bae0e6832f.zip/node_modules/pretty-hrtime/",\
           "packageDependencies": [\
             ["pretty-hrtime", "npm:1.0.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["primeflex", [\
+        ["npm:3.2.1", {\
+          "packageLocation": "./.yarn/cache/primeflex-npm-3.2.1-b9d1251ef6-87d2a5e885.zip/node_modules/primeflex/",\
+          "packageDependencies": [\
+            ["primeflex", "npm:3.2.1"]\
           ],\
           "linkType": "HARD"\
         }]\

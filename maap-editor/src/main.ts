@@ -1,3 +1,4 @@
+import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import PrimeVue from 'primevue/config';
 import 'primevue/resources/themes/saga-blue/theme.css';

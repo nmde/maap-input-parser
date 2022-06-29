@@ -6,12 +6,6 @@ export default frontend(
   path.resolve('src', 'index.ts'),
   path.resolve('dist'),
   {
-    output: {
-      library: {
-        type: 'commonjs',
-      },
-      publicPath: ''
-    },
     mode: 'production',
     module: {
       rules: [
@@ -20,6 +14,12 @@ export default frontend(
           type: 'asset/source',
         },
       ],
+    },
+    output: {
+      library: {
+        type: 'commonjs',
+      },
+      publicPath: '',
     },
   },
   'maap-inp-parser',

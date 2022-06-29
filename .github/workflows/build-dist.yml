@@ -1,0 +1,25 @@
+# The dist file is built here and pushed to the repo because it needs to be
+# easily accessible by another project that can't use submodules or npm modules.
+name: 'Build Dist'
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  test:
+    name: 'Build Dist'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Build'
+        run: |
+          node --experimental-vm-modules .yarn/releases/yarn-3.2.1.cjs webpack
+      - name: 'Commit Build'
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add .
+          git commit -m "Rebuild dist" || echo "No changes to commit"
+          git push

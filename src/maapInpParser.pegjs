@@ -222,10 +222,10 @@ TitleStatement = TITLE __ value:TitleBlock? __ END {
         value,
     }
 }
-TitleBlock = first:FreeCharacter+ rest:(__ !END TitleBlock)? {
+TitleBlock = !END first:FreeCharacter+ rest:(__ TitleBlock)? {
 	let title = extractList(first, 1).join('');
     if (rest) {
-    	title += '\n' + rest[2];
+    	title += '\n' + rest[1];
     }
 	return title;
 }

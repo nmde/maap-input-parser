@@ -1,0 +1,12 @@
+** Tests parameter file statements **
+
+C Default
+PARAMETER FILE parameter_file.PAR
+
+C Value not resembling a file
+C The parser makes no judgments about what the file path should look like
+PARAMETER FILE 1
+
+C No file specified
+C Should parse as an identifier
+PARAMETER FILE

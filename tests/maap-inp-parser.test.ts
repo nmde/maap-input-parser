@@ -34,6 +34,40 @@ describe('maapInpParser', () => {
       value: 'SENSITIVITY',
     });
   });
+  test('title statements', async () => {
+    const program = maapInpParser.parse(await readTestData('title.INP')).output
+      .value;
+    expect(program[0]).toStrictEqual({
+      type: 'title',
+      value: 'Valid Title',
+    });
+    expect(program[1]).toStrictEqual({
+      type: 'title',
+      value: `A title that
+extends onto
+multiple lines`,
+    });
+    expect(program[2]).toStrictEqual({
+      type: 'title',
+      value: null,
+    });
+  });
+  test('parameter file statements', async () => {
+    const program = maapInpParser.parse(await readTestData('parameterFile.INP'))
+      .output.value;
+    expect(program[0]).toStrictEqual({
+      type: 'parameter_file',
+      value: 'parameter_file.PAR',
+    });
+    expect(program[1]).toStrictEqual({
+      type: 'parameter_file',
+      value: '1',
+    });
+    expect(program[2]).toStrictEqual({
+      type: 'identifier',
+      value: 'PARAMETER FILE',
+    });
+  });
 });
 
 describe('safeMode', () => {

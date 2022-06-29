@@ -98,7 +98,9 @@ F = "F"i
 FALSE = "FALSE"i
 FUNCTION = "FUNCTION"i
 INCLUDE = "INCLUDE"i
-INITIATORS = "INITIATOR"i "S"i?
+INITIATORS = "INITIATOR"i "S"i? {
+	return "INITIATORS";
+}
 IF = "IF"i
 IS = "IS"i
 LOOKUP_VARIABLE = "LOOKUP VARIABLE"i
@@ -187,18 +189,15 @@ Variable = CallExpression / ExpressionMember
 /* Statements */
 Statement = SensitivityStatement
 	/ TitleStatement
-    / ParameterFileStatement
-    / IncludeStatement
+    / FileStatement
     / SI {
     	return {
         	type: "units",
             value: "SI",
         }
     }
-    / ParameterChangeStatement
-    / InitiatorsStatement
-    / WhenStatement
-    / IfStatement
+    / BlockStatement
+    / ConditionalBlockStatement
     / AliasStatement
     / PlotFilStatement
     / UserEvtStatement
@@ -224,41 +223,25 @@ TitleBlock = !END first:FreeCharacter+ rest:(__ TitleBlock)? {
     }
 	return title;
 }
-ParameterFileStatement = PARAMETER_FILE _ v:FreeCharacter+ {
+FileStatement = fileType:(PARAMETER_FILE / INCLUDE) _ v:FreeCharacter+ {
 	return {
-    	type: "parameter_file",
+    	fileType,
+    	type: "file",
         value: extractList(v, 1).join(''),
     }
 }
-IncludeStatement = INCLUDE _ v:FreeCharacter+ {
+BlockStatement = blockType:(PARAMETER_CHANGE / INITIATORS) __ value:SourceElements? __ END {
 	return {
-    	type: "include",
-        value: extractList(v, 1).join(''),
-    }
-}
-ParameterChangeStatement = PARAMETER_CHANGE __ value:SourceElements? __ END {
-	return {
-    	type: "parameter_change",
+    	blockType,
+        type: "block",
         value: value || [],
     }
 }
-InitiatorsStatement = INITIATORS __ value:SourceElements? __ END {
+ConditionalBlockStatement = blockType:(WHEN / IF) _ test:Expr __ value:SourceElements? __ END {
 	return {
-    	type: "initiators",
-        value: value || [],
-    }
-}
-WhenStatement = WHEN _ test:Expr __ value:SourceElements? __ END {
-	return {
+    	blockType,
     	test,
-    	type: "when",
-        value: value || [],
-    }
-}
-IfStatement = IF _ test:Expr __ value:SourceElements? __ END {
-	return {
-    	test,
-    	type: "if",
+    	type: "conditional_block",
         value: value || [],
     }
 }

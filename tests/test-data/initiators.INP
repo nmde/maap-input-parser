@@ -1,0 +1,17 @@
+** Tests initiators statements **
+
+C Default
+INITIATORS
+VarName(1) = 1
+END
+
+C Empty
+INITIATORS
+END
+
+C With nested source elements
+INITIATORS
+IF VarName(1) IS 1
+SET TIMER #1
+END
+END

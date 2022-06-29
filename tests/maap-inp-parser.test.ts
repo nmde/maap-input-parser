@@ -120,11 +120,13 @@ multiple lines`,
     const program = maapInpParser.parse(await readTestData('parameterFile.INP'))
       .output.value;
     expect(program[0]).toStrictEqual({
-      type: 'parameter_file',
+      fileType: 'PARAMETER FILE',
+      type: 'file',
       value: 'parameter_file.PAR',
     });
     expect(program[1]).toStrictEqual({
-      type: 'parameter_file',
+      fileType: 'PARAMETER FILE',
+      type: 'file',
       value: '1',
     });
     expect(program[2]).toStrictEqual({
@@ -136,11 +138,13 @@ multiple lines`,
     const program = maapInpParser.parse(await readTestData('include.INP'))
       .output.value;
     expect(program[0]).toStrictEqual({
-      type: 'include',
+      fileType: 'INCLUDE',
+      type: 'file',
       value: 'file.inc',
     });
     expect(program[1]).toStrictEqual({
-      type: 'include',
+      fileType: 'INCLUDE',
+      type: 'file',
       value: '1234',
     });
     expect(program[2]).toStrictEqual({
@@ -153,7 +157,8 @@ multiple lines`,
       await readTestData('parameterChange.INP'),
     ).output.value;
     expect(program[0]).toStrictEqual({
-      type: 'parameter_change',
+      blockType: 'PARAMETER CHANGE',
+      type: 'block',
       value: [
         {
           target: {
@@ -182,13 +187,16 @@ multiple lines`,
       ],
     });
     expect(program[1]).toStrictEqual({
-      type: 'parameter_change',
+      blockType: 'PARAMETER CHANGE',
+      type: 'block',
       value: [],
     });
     expect(program[2]).toStrictEqual({
-      type: 'parameter_change',
+      blockType: 'PARAMETER CHANGE',
+      type: 'block',
       value: [
         {
+          blockType: 'IF',
           test: {
             type: 'is_expression',
             value: {
@@ -215,7 +223,91 @@ multiple lines`,
               },
             },
           },
-          type: 'if',
+          type: 'conditional_block',
+          value: [
+            {
+              type: 'set_timer',
+              value: {
+                type: 'timer',
+                value: 1,
+              },
+            },
+          ],
+        },
+      ],
+    });
+  });
+  test('initiators statements', async () => {
+    const program = maapInpParser.parse(await readTestData('initiators.INP'))
+      .output.value;
+    expect(program[0]).toStrictEqual({
+      blockType: 'INITIATORS',
+      type: 'block',
+      value: [
+        {
+          target: {
+            type: 'call_expression',
+            value: {
+              arguments: [
+                {
+                  type: 'number',
+                  units: undefined,
+                  value: 1,
+                },
+              ],
+              name: {
+                type: 'identifier',
+                value: 'VarName',
+              },
+            },
+          },
+          type: 'assignment',
+          value: {
+            type: 'number',
+            units: undefined,
+            value: 1,
+          },
+        },
+      ],
+    });
+    expect(program[1]).toStrictEqual({
+      blockType: 'INITIATORS',
+      type: 'block',
+      value: [],
+    });
+    expect(program[2]).toStrictEqual({
+      blockType: 'INITIATORS',
+      type: 'block',
+      value: [
+        {
+          blockType: 'IF',
+          test: {
+            type: 'is_expression',
+            value: {
+              target: {
+                type: 'call_expression',
+                value: {
+                  arguments: [
+                    {
+                      type: 'number',
+                      units: undefined,
+                      value: 1,
+                    },
+                  ],
+                  name: {
+                    type: 'identifier',
+                    value: 'VarName',
+                  },
+                },
+              },
+              value: {
+                type: 'number',
+                units: undefined,
+                value: 1,
+              },
+            },
+          },
+          type: 'conditional_block',
           value: [
             {
               type: 'set_timer',
@@ -291,7 +383,8 @@ describe('safeMode', () => {
     });
     expect(safeParsed.errors.length).toBe(2);
     expect(safeParsed.output.value[0]).toStrictEqual({
-      type: 'initiators',
+      blockType: 'INITIATORS',
+      type: 'block',
       value: [
         {
           type: 'identifier',

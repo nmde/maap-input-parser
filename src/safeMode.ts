@@ -24,7 +24,7 @@ export default function safeMode(
     };
   } catch (err) {
     const syntaxError = err as Parser['SyntaxError'];
-    if (syntaxError.location && options?.safeMode && errors.length < 10) {
+    if (syntaxError.location && options?.safeMode !== false) {
       const inputLines = input.split('\n');
       const line = syntaxError.location.start.line - 1;
       inputLines[line] = `// ${inputLines[line]}`;

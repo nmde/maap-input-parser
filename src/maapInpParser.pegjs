@@ -134,7 +134,7 @@ Arguments = value:ExpressionType rest:(_ "," _ Arguments)? {
     }
 	return args;
 }
-CallExpression = name:Identifier _ "(" args:Arguments ")" {
+CallExpression = name:Identifier _ "(" args:Arguments? ")" {
 	return {
     	type: "call_expression",
         value: {
@@ -365,4 +365,4 @@ Program = value:SourceElements? {
 SourceElements = head:SourceElement tail:(__ SourceElement)* {
 	return [head].concat(extractList(tail, 1));
 }
-SourceElement = Statement / Assignment / Expr / AsExpression
+SourceElement = Statement / Assignment / AsExpression / Expr

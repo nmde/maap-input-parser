@@ -15,9 +15,11 @@ beforeAll(async () => {
       },
     ),
   );
+  // Turn safe mode off to make sure tests fail when expected
+  maapInpParser.options.safeMode = false;
 });
 
-describe('maapInpParser', () => {
+describe('statements', () => {
   test('sensitivity statements', async () => {
     const program = maapInpParser.parse(await readTestData('sensitivity.INP'))
       .output.value;
@@ -66,6 +68,67 @@ multiple lines`,
     expect(program[2]).toStrictEqual({
       type: 'identifier',
       value: 'PARAMETER FILE',
+    });
+  });
+  test('include statements', async () => {
+    const program = maapInpParser.parse(await readTestData('include.INP'))
+      .output.value;
+    expect(program[0]).toStrictEqual({
+      type: 'include',
+      value: 'file.inc',
+    });
+    expect(program[1]).toStrictEqual({
+      type: 'include',
+      value: '1234',
+    });
+    expect(program[2]).toStrictEqual({
+      type: 'identifier',
+      value: 'INCLUDE',
+    });
+  });
+});
+
+describe('program blocks', () => {
+  test('source elements', async () => {
+    const program = maapInpParser.parse(
+      await readTestData('sourceElements.INP'),
+    ).output.value;
+    expect(program[0]).toStrictEqual({
+      type: 'sensitivity',
+      value: 'ON',
+    });
+    expect(program[1]).toStrictEqual({
+      target: {
+        type: 'identifier',
+        value: 'Identifier',
+      },
+      type: 'assignment',
+      value: {
+        type: 'number',
+        units: 'HR',
+        value: 1,
+      },
+    });
+    expect(program[2]).toStrictEqual({
+      type: 'call_expression',
+      value: {
+        arguments: null,
+        name: {
+          type: 'identifier',
+          value: 'Function',
+        },
+      },
+    });
+    expect(program[3]).toStrictEqual({
+      target: {
+        type: 'identifier',
+        value: 'Identifier',
+      },
+      type: 'as_expression',
+      value: {
+        type: 'identifier',
+        value: 'Value',
+      },
     });
   });
 });

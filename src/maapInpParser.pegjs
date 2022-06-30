@@ -124,13 +124,11 @@ Arguments = value:ExpressionType rest:(_ "," _ Arguments)? {
     }
 	return args;
 }
-CallExpression = name:Identifier _ "(" args:Arguments? ")" {
+CallExpression = value:Identifier _ "(" args:Arguments? ")" {
 	return {
+    	arguments: args || [],
     	type: "call_expression",
-        value: {
-        	arguments: args,
-        	name,
-        },
+        value,
     }
 }
 ExpressionOperator = "**" / "*" / "/" / ">=" / "<=" / ">" / "<" / "+" / "-"
@@ -140,7 +138,7 @@ Expression = left:ExpressionType _ op:ExpressionOperator _ right:(Expression / E
         value: {
         	left,
             op,
-        	right,
+            right,
         },
     }
 }
@@ -160,11 +158,9 @@ Assignment = target:(CallExpression / Identifier) _ "=" _ value:Expr {
 }
 IsExpression = target:(CallExpression / Identifier) _ IS _ value:Expr {
 	return {
+    	target,
     	type: "is_expression",
-        value: {
-        	target,
-            value,
-        },
+        value,
     }
 }
 AsExpression = target:(CallExpression / Identifier) _ AS _ value:Identifier {
@@ -181,12 +177,6 @@ Variable = CallExpression / ExpressionMember
 Statement = SensitivityStatement
 	/ TitleStatement
     / FileStatement
-    / SI {
-    	return {
-        	type: "units",
-            value: "SI",
-        }
-    }
     / BlockStatement
     / ConditionalBlockStatement
     / AliasStatement
@@ -239,7 +229,7 @@ ConditionalBlockStatement = blockType:(WHEN / IF) _ test:Expr __ value:SourceEle
 AliasStatement = ALIAS __ value:AliasBody? __ END {
 	return {
     	type: "alias",
-        value,
+        value: value || [],
     }
 }
 AliasBody = head:AsExpression tail:(__ AsExpression)* {
@@ -249,7 +239,7 @@ PlotFilStatement = PLOTFIL _ n:[0-9]+ __ value:PlotFilBody? __ END {
 	return {
     	n: Number(n.join('')),
     	type: "plotfil",
-        value,
+        value: value || [],
     }
 }
 PlotFilList = head:(CallExpression / ExpressionMember) tail:(_ "," _ PlotFilList)* {
@@ -315,7 +305,7 @@ LookupBody = !Reserved head:FreeCharacter+ tail:(__ LookupBody)* {
 Program = value:SourceElements? {
 	return {
     	type: "program",
-        value,
+        value: value || [],
     }
 }
 SourceElements = head:SourceElement tail:(__ SourceElement)* {

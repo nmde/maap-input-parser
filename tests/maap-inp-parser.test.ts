@@ -1,11 +1,11 @@
 import fs from 'fs/promises';
 import path from 'path';
 import peggy from 'peggy';
-import { MAAPInpParser } from '../src/types';
+import * as t from '../src/types';
 import wrapper from '../src/wrapper';
 import { readTestData } from './util';
 
-let maapInpParser: MAAPInpParser;
+let maapInpParser: t.MAAPInpParser;
 beforeAll(async () => {
   maapInpParser = wrapper(
     peggy.generate(
@@ -24,58 +24,50 @@ describe('expressions', () => {
     const program = maapInpParser.parse(await readTestData('is.INP')).output
       .value;
     expect(program[0]).toStrictEqual({
+      target: {
+        type: 'identifier',
+        value: 'VARNAME',
+      },
       type: 'is_expression',
       value: {
-        target: {
-          type: 'identifier',
-          value: 'VARNAME',
-        },
-        value: {
-          type: 'identifier',
-          value: 'Value',
-        },
+        type: 'identifier',
+        value: 'Value',
       },
     });
     expect(program[1]).toStrictEqual({
+      target: {
+        type: 'identifier',
+        value: 'START TIME',
+      },
       type: 'is_expression',
       value: {
-        target: {
-          type: 'identifier',
-          value: 'START TIME',
-        },
-        value: {
-          type: 'number',
-          units: undefined,
-          value: 0,
-        },
+        type: 'number',
+        units: undefined,
+        value: 0,
       },
     });
     expect(program[2]).toStrictEqual({
+      target: {
+        type: 'identifier',
+        value: 'END TIME',
+      },
       type: 'is_expression',
       value: {
-        target: {
-          type: 'identifier',
-          value: 'END TIME',
-        },
-        value: {
-          type: 'number',
-          units: undefined,
-          value: 144000,
-        },
+        type: 'number',
+        units: undefined,
+        value: 144000,
       },
     });
     expect(program[3]).toStrictEqual({
+      target: {
+        type: 'identifier',
+        value: 'PRINT INTERVAL',
+      },
       type: 'is_expression',
       value: {
-        target: {
-          type: 'identifier',
-          value: 'PRINT INTERVAL',
-        },
-        value: {
-          type: 'number',
-          units: undefined,
-          value: 5000,
-        },
+        type: 'number',
+        units: undefined,
+        value: 5000,
       },
     });
   });
@@ -161,19 +153,17 @@ multiple lines`,
       value: [
         {
           target: {
+            arguments: [
+              {
+                type: 'number',
+                units: undefined,
+                value: 1,
+              },
+            ],
             type: 'call_expression',
             value: {
-              arguments: [
-                {
-                  type: 'number',
-                  units: undefined,
-                  value: 1,
-                },
-              ],
-              name: {
-                type: 'identifier',
-                value: 'VarName',
-              },
+              type: 'identifier',
+              value: 'VarName',
             },
           },
           type: 'assignment',
@@ -197,29 +187,25 @@ multiple lines`,
         {
           blockType: 'IF',
           test: {
+            target: {
+              arguments: [
+                {
+                  type: 'number',
+                  units: undefined,
+                  value: 1,
+                },
+              ],
+              type: 'call_expression',
+              value: {
+                type: 'identifier',
+                value: 'VarName',
+              },
+            },
             type: 'is_expression',
             value: {
-              target: {
-                type: 'call_expression',
-                value: {
-                  arguments: [
-                    {
-                      type: 'number',
-                      units: undefined,
-                      value: 1,
-                    },
-                  ],
-                  name: {
-                    type: 'identifier',
-                    value: 'VarName',
-                  },
-                },
-              },
-              value: {
-                type: 'number',
-                units: undefined,
-                value: 1,
-              },
+              type: 'number',
+              units: undefined,
+              value: 1,
             },
           },
           type: 'conditional_block',
@@ -241,19 +227,17 @@ multiple lines`,
       value: [
         {
           target: {
+            arguments: [
+              {
+                type: 'number',
+                units: undefined,
+                value: 1,
+              },
+            ],
             type: 'call_expression',
             value: {
-              arguments: [
-                {
-                  type: 'number',
-                  units: undefined,
-                  value: 1,
-                },
-              ],
-              name: {
-                type: 'identifier',
-                value: 'VarName',
-              },
+              type: 'identifier',
+              value: 'VarName',
             },
           },
           type: 'assignment',
@@ -277,29 +261,25 @@ multiple lines`,
         {
           blockType: 'IF',
           test: {
+            target: {
+              arguments: [
+                {
+                  type: 'number',
+                  units: undefined,
+                  value: 1,
+                },
+              ],
+              type: 'call_expression',
+              value: {
+                type: 'identifier',
+                value: 'VarName',
+              },
+            },
             type: 'is_expression',
             value: {
-              target: {
-                type: 'call_expression',
-                value: {
-                  arguments: [
-                    {
-                      type: 'number',
-                      units: undefined,
-                      value: 1,
-                    },
-                  ],
-                  name: {
-                    type: 'identifier',
-                    value: 'VarName',
-                  },
-                },
-              },
-              value: {
-                type: 'number',
-                units: undefined,
-                value: 1,
-              },
+              type: 'number',
+              units: undefined,
+              value: 1,
             },
           },
           type: 'conditional_block',
@@ -323,16 +303,14 @@ multiple lines`,
     expect(program[0]).toStrictEqual({
       blockType: 'WHEN',
       test: {
+        target: {
+          type: 'identifier',
+          value: 'VARIABLE',
+        },
         type: 'is_expression',
         value: {
-          target: {
-            type: 'identifier',
-            value: 'VARIABLE',
-          },
-          value: {
-            type: 'boolean',
-            value: true,
-          },
+          type: 'boolean',
+          value: true,
         },
       },
       type: 'conditional_block',
@@ -354,16 +332,14 @@ multiple lines`,
     expect(program[1]).toStrictEqual({
       blockType: 'WHEN',
       test: {
+        target: {
+          type: 'identifier',
+          value: 'VARIABLE',
+        },
         type: 'is_expression',
         value: {
-          target: {
-            type: 'identifier',
-            value: 'VARIABLE',
-          },
-          value: {
-            type: 'boolean',
-            value: true,
-          },
+          type: 'boolean',
+          value: true,
         },
       },
       type: 'conditional_block',
@@ -372,16 +348,14 @@ multiple lines`,
     expect(program[2]).toStrictEqual({
       blockType: 'IF',
       test: {
+        target: {
+          type: 'identifier',
+          value: 'VARIABLE',
+        },
         type: 'is_expression',
         value: {
-          target: {
-            type: 'identifier',
-            value: 'VARIABLE',
-          },
-          value: {
-            type: 'boolean',
-            value: true,
-          },
+          type: 'boolean',
+          value: true,
         },
       },
       type: 'conditional_block',
@@ -403,16 +377,14 @@ multiple lines`,
     expect(program[3]).toStrictEqual({
       blockType: 'IF',
       test: {
+        target: {
+          type: 'identifier',
+          value: 'VARIABLE',
+        },
         type: 'is_expression',
         value: {
-          target: {
-            type: 'identifier',
-            value: 'VARIABLE',
-          },
-          value: {
-            type: 'boolean',
-            value: true,
-          },
+          type: 'boolean',
+          value: true,
         },
       },
       type: 'conditional_block',
@@ -440,7 +412,7 @@ multiple lines`,
     });
     expect(program[1]).toStrictEqual({
       type: 'alias',
-      value: null,
+      value: [],
     });
   });
   test('plotfil statements', async () => {
@@ -488,18 +460,16 @@ multiple lines`,
             value: 'H',
           },
           {
+            arguments: [
+              {
+                type: 'identifier',
+                value: 'J',
+              },
+            ],
             type: 'call_expression',
             value: {
-              arguments: [
-                {
-                  type: 'identifier',
-                  value: 'J',
-                },
-              ],
-              name: {
-                type: 'identifier',
-                value: 'I',
-              },
+              type: 'identifier',
+              value: 'I',
             },
           },
         ],
@@ -510,7 +480,8 @@ multiple lines`,
     const program = maapInpParser.parse(await readTestData('userevt.INP'))
       .output.value;
     expect(program[0].type).toBe('user_evt');
-    expect(program[0].value[0]).toStrictEqual({
+    const userEvt = program[0] as t.UserEvtStatement;
+    expect(userEvt.value[0]).toStrictEqual({
       flag: {
         type: 'boolean',
         value: true,
@@ -519,13 +490,13 @@ multiple lines`,
       type: 'parameter',
       value: 'Parameter Name',
     });
-    expect(program[0].value[1]).toStrictEqual({
+    expect(userEvt.value[1]).toStrictEqual({
       flag: [],
       index: 102,
       type: 'parameter',
       value: 'Parameter 2',
     });
-    expect(program[0].value[2]).toStrictEqual({
+    expect(userEvt.value[2]).toStrictEqual({
       index: 1,
       type: 'action',
       value: [
@@ -542,19 +513,17 @@ multiple lines`,
         },
       ],
     });
-    expect(program[0].value[3]).toStrictEqual({
+    expect(userEvt.value[3]).toStrictEqual({
       blockType: 'IF',
       test: {
+        target: {
+          type: 'identifier',
+          value: 'VALUE',
+        },
         type: 'is_expression',
         value: {
-          target: {
-            type: 'identifier',
-            value: 'VALUE',
-          },
-          value: {
-            type: 'boolean',
-            value: true,
-          },
+          type: 'boolean',
+          value: true,
         },
       },
       type: 'conditional_block',
@@ -638,13 +607,11 @@ describe('program blocks', () => {
       },
     });
     expect(program[2]).toStrictEqual({
+      arguments: [],
       type: 'call_expression',
       value: {
-        arguments: null,
-        name: {
-          type: 'identifier',
-          value: 'Function',
-        },
+        type: 'identifier',
+        value: 'Function',
       },
     });
     expect(program[3]).toStrictEqual({

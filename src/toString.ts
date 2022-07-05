@@ -31,6 +31,7 @@ function isStatement(type: string): boolean {
       'function',
       'set_timer',
       'lookup_variable',
+      'action',
     ].indexOf(type) >= 0
   );
 }
@@ -498,13 +499,40 @@ function sourceElementToString(sourceElement: t.SourceElement): string {
 }
 
 /**
- * Compiles the given Program object into code.
+ * Converts the given object into code.
  *
- * @param input - The program to compile.
+ * @param input - The object to compile.
  * @returns The compiled program.
  */
-export default function toString(input: t.Program): string {
-  return input.value
-    .map((sourceElement) => sourceElementToString(sourceElement))
-    .join('\n');
+export default function toString(input: t.Program | t.UserEvtElement | t.Literal | t.Identifier): string {
+  if (isStatement(input.type)) {
+    return statementToString(input as t.Statement);
+  }
+  if (isLiteral(input.type)) {
+    return literalToString(input as t.Literal);
+  }
+  switch (input.type) {
+    case 'program':
+      return input.value
+        .map((sourceElement) => sourceElementToString(sourceElement))
+        .join('\n');
+    case 'parameter':
+      return parameterToString(input);
+    case 'call_expression':
+      return callExpressionToString(input);
+    case 'expression':
+      return pureExpressionToString(input);
+    case 'expression_block':
+      return expressionBlockToString(input);
+    case 'assignment':
+      return assignmentToString(input);
+    case 'is_expression':
+      return isExpressionToString(input);
+    case 'as_expression':
+      return asExpressionToString(input);
+    case 'identifier':
+      return identifierToString(input);
+    default:
+      throw new Error(`Unexpected input type: ${input.type}`);
+  }
 }

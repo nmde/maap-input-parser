@@ -1,4 +1,4 @@
-** Tests parameter file statements **
+** Tests file statements **
 
 C Default
 PARAMETER FILE parameter_file.PAR
@@ -10,3 +10,14 @@ PARAMETER FILE 1
 C No file specified
 C Should parse as an identifier
 PARAMETER FILE
+
+C Default
+INCLUDE file.inc
+
+C Non-file value
+C The parser makes no judgments about the format of file paths
+INCLUDE 1234
+
+C Empty
+C Should be parsed as an identifier
+INCLUDE

@@ -20,10 +20,94 @@ beforeAll(async () => {
 });
 
 describe('expressions', () => {
+  test('call expression', async () => {
+    const program = maapInpParser.parse(await readTestData('call.INP')).output;
+    expect(program.value[0]).toStrictEqual({
+      arguments: [],
+      type: 'call_expression',
+      value: {
+        type: 'identifier',
+        value: 'Name',
+      },
+    });
+    expect(program.value[1]).toStrictEqual({
+      arguments: [
+        {
+          type: 'number',
+          units: undefined,
+          value: 1,
+        },
+      ],
+      type: 'call_expression',
+      value: {
+        type: 'identifier',
+        value: 'Name',
+      },
+    });
+    expect(program.value[2]).toStrictEqual({
+      arguments: [
+        {
+          type: 'number',
+          units: undefined,
+          value: 1,
+        },
+        {
+          type: 'number',
+          units: undefined,
+          value: 2,
+        },
+        {
+          type: 'number',
+          units: undefined,
+          value: 3,
+        },
+      ],
+      type: 'call_expression',
+      value: {
+        type: 'identifier',
+        value: 'Name',
+      },
+    });
+    expect(program.value[3]).toStrictEqual({
+      arguments: [
+        {
+          arguments: [
+            {
+              arguments: [
+                {
+                  arguments: [],
+                  type: 'call_expression',
+                  value: {
+                    type: 'identifier',
+                    value: 'Function',
+                  },
+                },
+              ],
+              type: 'call_expression',
+              value: {
+                type: 'identifier',
+                value: 'A',
+              },
+            },
+          ],
+          type: 'call_expression',
+          value: {
+            type: 'identifier',
+            value: 'Of',
+          },
+        },
+      ],
+      type: 'call_expression',
+      value: {
+        type: 'identifier',
+        value: 'Name',
+      },
+    });
+    expect(maapInpParser.toString(program)).toBe('Name()\nName(1)\nName(1,2,3)\nName(Of(A(Function())))');
+  });
   test('is expression', async () => {
-    const program = maapInpParser.parse(await readTestData('is.INP')).output
-      .value;
-    expect(program[0]).toStrictEqual({
+    const program = maapInpParser.parse(await readTestData('is.INP')).output;
+    expect(program.value[0]).toStrictEqual({
       target: {
         type: 'identifier',
         value: 'VARNAME',
@@ -34,7 +118,7 @@ describe('expressions', () => {
         value: 'Value',
       },
     });
-    expect(program[1]).toStrictEqual({
+    expect(program.value[1]).toStrictEqual({
       target: {
         type: 'identifier',
         value: 'START TIME',
@@ -46,7 +130,7 @@ describe('expressions', () => {
         value: 0,
       },
     });
-    expect(program[2]).toStrictEqual({
+    expect(program.value[2]).toStrictEqual({
       target: {
         type: 'identifier',
         value: 'END TIME',
@@ -58,7 +142,7 @@ describe('expressions', () => {
         value: 144000,
       },
     });
-    expect(program[3]).toStrictEqual({
+    expect(program.value[3]).toStrictEqual({
       target: {
         type: 'identifier',
         value: 'PRINT INTERVAL',
@@ -70,84 +154,82 @@ describe('expressions', () => {
         value: 5000,
       },
     });
+    expect(maapInpParser.toString(program)).toBe('VARNAME IS Value\nSTART TIME IS 0\nEND TIME IS 144000\nPRINT INTERVAL IS 5000');
   });
 });
 
 describe('statements', () => {
   test('sensitivity statements', async () => {
     const program = maapInpParser.parse(await readTestData('sensitivity.INP'))
-      .output.value;
-    expect(program[0]).toStrictEqual({
+      .output;
+    expect(program.value[0]).toStrictEqual({
       type: 'sensitivity',
       value: 'ON',
     });
-    expect(program[1]).toStrictEqual({
+    expect(program.value[1]).toStrictEqual({
       type: 'sensitivity',
       value: 'OFF',
     });
-    expect(program[2]).toStrictEqual({
+    expect(program.value[2]).toStrictEqual({
       type: 'identifier',
       value: 'SENSITIVITY',
     });
+    expect(maapInpParser.toString(program)).toBe('SENSITIVITY ON\nSENSITIVITY OFF\nSENSITIVITY');
   });
   test('title statements', async () => {
-    const program = maapInpParser.parse(await readTestData('title.INP')).output
-      .value;
-    expect(program[0]).toStrictEqual({
+    const program = maapInpParser.parse(await readTestData('title.INP')).output;
+    expect(program.value[0]).toStrictEqual({
       type: 'title',
       value: 'Valid Title',
     });
-    expect(program[1]).toStrictEqual({
+    expect(program.value[1]).toStrictEqual({
       type: 'title',
       value: `A title that
 extends onto
 multiple lines`,
     });
-    expect(program[2]).toStrictEqual({
+    expect(program.value[2]).toStrictEqual({
       type: 'title',
       value: null,
     });
+    expect(maapInpParser.toString(program)).toBe('TITLE\nValid Title\nEND\nTITLE\nA title that\nextends onto\nmultiple lines\nEND\nTITLE\n\nEND');
   });
   test('parameter file statements', async () => {
-    const program = maapInpParser.parse(await readTestData('parameterFile.INP'))
-      .output.value;
-    expect(program[0]).toStrictEqual({
+    const program = maapInpParser.parse(await readTestData('file.INP'))
+      .output;
+    expect(program.value[0]).toStrictEqual({
       fileType: 'PARAMETER FILE',
       type: 'file',
       value: 'parameter_file.PAR',
     });
-    expect(program[1]).toStrictEqual({
+    expect(program.value[1]).toStrictEqual({
       fileType: 'PARAMETER FILE',
       type: 'file',
       value: '1',
     });
-    expect(program[2]).toStrictEqual({
+    expect(program.value[2]).toStrictEqual({
       type: 'identifier',
       value: 'PARAMETER FILE',
     });
-  });
-  test('include statements', async () => {
-    const program = maapInpParser.parse(await readTestData('include.INP'))
-      .output.value;
-    expect(program[0]).toStrictEqual({
+    expect(program.value[3]).toStrictEqual({
       fileType: 'INCLUDE',
       type: 'file',
       value: 'file.inc',
     });
-    expect(program[1]).toStrictEqual({
+    expect(program.value[4]).toStrictEqual({
       fileType: 'INCLUDE',
       type: 'file',
       value: '1234',
     });
-    expect(program[2]).toStrictEqual({
+    expect(program.value[5]).toStrictEqual({
       type: 'identifier',
       value: 'INCLUDE',
     });
+    expect(maapInpParser.toString(program)).toBe('PARAMETER FILE parameter_file.PAR\nPARAMETER FILE 1\nPARAMETER FILE\nINCLUDE file.inc\nINCLUDE 1234\nINCLUDE');
   });
   test('block statements', async () => {
-    const program = maapInpParser.parse(await readTestData('block.INP')).output
-      .value;
-    expect(program[0]).toStrictEqual({
+    const program = maapInpParser.parse(await readTestData('block.INP')).output;
+    expect(program.value[0]).toStrictEqual({
       blockType: 'PARAMETER CHANGE',
       type: 'block',
       value: [
@@ -175,12 +257,12 @@ multiple lines`,
         },
       ],
     });
-    expect(program[1]).toStrictEqual({
+    expect(program.value[1]).toStrictEqual({
       blockType: 'PARAMETER CHANGE',
       type: 'block',
       value: [],
     });
-    expect(program[2]).toStrictEqual({
+    expect(program.value[2]).toStrictEqual({
       blockType: 'PARAMETER CHANGE',
       type: 'block',
       value: [
@@ -221,7 +303,7 @@ multiple lines`,
         },
       ],
     });
-    expect(program[3]).toStrictEqual({
+    expect(program.value[3]).toStrictEqual({
       blockType: 'INITIATORS',
       type: 'block',
       value: [
@@ -249,12 +331,12 @@ multiple lines`,
         },
       ],
     });
-    expect(program[4]).toStrictEqual({
+    expect(program.value[4]).toStrictEqual({
       blockType: 'INITIATORS',
       type: 'block',
       value: [],
     });
-    expect(program[5]).toStrictEqual({
+    expect(program.value[5]).toStrictEqual({
       blockType: 'INITIATORS',
       type: 'block',
       value: [
@@ -295,12 +377,34 @@ multiple lines`,
         },
       ],
     });
+    expect(maapInpParser.toString(program)).toBe(`PARAMETER CHANGE
+VarName(1) = 1
+END
+PARAMETER CHANGE
+
+END
+PARAMETER CHANGE
+IF VarName(1) IS 1
+SET TIMER #1
+END
+END
+INITIATORS
+VarName(1) = 1
+END
+INITIATORS
+
+END
+INITIATORS
+IF VarName(1) IS 1
+SET TIMER #1
+END
+END`);
   });
   test('conditional block statements', async () => {
     const program = maapInpParser.parse(
       await readTestData('conditionalBlock.INP'),
-    ).output.value;
-    expect(program[0]).toStrictEqual({
+    ).output;
+    expect(program.value[0]).toStrictEqual({
       blockType: 'WHEN',
       test: {
         target: {
@@ -329,7 +433,7 @@ multiple lines`,
         },
       ],
     });
-    expect(program[1]).toStrictEqual({
+    expect(program.value[1]).toStrictEqual({
       blockType: 'WHEN',
       test: {
         target: {
@@ -345,7 +449,7 @@ multiple lines`,
       type: 'conditional_block',
       value: [],
     });
-    expect(program[2]).toStrictEqual({
+    expect(program.value[2]).toStrictEqual({
       blockType: 'IF',
       test: {
         target: {
@@ -374,7 +478,7 @@ multiple lines`,
         },
       ],
     });
-    expect(program[3]).toStrictEqual({
+    expect(program.value[3]).toStrictEqual({
       blockType: 'IF',
       test: {
         target: {
@@ -390,11 +494,22 @@ multiple lines`,
       type: 'conditional_block',
       value: [],
     });
+    expect(maapInpParser.toString(program)).toBe(`WHEN VARIABLE IS T
+VARNAME = 1000
+END
+WHEN VARIABLE IS T
+
+END
+IF VARIABLE IS T
+VARNAME = 1000
+END
+IF VARIABLE IS T
+
+END`);
   });
   test('alias statements', async () => {
-    const program = maapInpParser.parse(await readTestData('alias.INP')).output
-      .value;
-    expect(program[0]).toStrictEqual({
+    const program = maapInpParser.parse(await readTestData('alias.INP')).output;
+    expect(program.value[0]).toStrictEqual({
       type: 'alias',
       value: [
         {
@@ -410,15 +525,21 @@ multiple lines`,
         },
       ],
     });
-    expect(program[1]).toStrictEqual({
+    expect(program.value[1]).toStrictEqual({
       type: 'alias',
       value: [],
     });
+    expect(maapInpParser.toString(program)).toBe(`ALIAS
+VARNAME AS Value
+END
+ALIAS
+
+END`);
   });
   test('plotfil statements', async () => {
     const program = maapInpParser.parse(await readTestData('plotfil.INP'))
-      .output.value;
-    expect(program[0]).toStrictEqual({
+      .output;
+    expect(program.value[0]).toStrictEqual({
       n: 3,
       type: 'plotfil',
       value: [
@@ -475,12 +596,17 @@ multiple lines`,
         ],
       ],
     });
+    expect(maapInpParser.toString(program)).toBe(`PLOTFIL 3
+A,B,C
+D,E,F
+G,H,I(J)
+END`);
   });
   test('userevt statements', async () => {
     const program = maapInpParser.parse(await readTestData('userevt.INP'))
-      .output.value;
-    expect(program[0].type).toBe('user_evt');
-    const userEvt = program[0] as t.UserEvtStatement;
+      .output;
+    expect(program.value[0].type).toBe('user_evt');
+    const userEvt = program.value[0] as t.UserEvtStatement;
     expect(userEvt.value[0]).toStrictEqual({
       flag: {
         type: 'boolean',
@@ -491,7 +617,7 @@ multiple lines`,
       value: 'Parameter Name',
     });
     expect(userEvt.value[1]).toStrictEqual({
-      flag: [],
+      flag: undefined,
       index: 102,
       type: 'parameter',
       value: 'Parameter 2',
@@ -501,7 +627,7 @@ multiple lines`,
       type: 'action',
       value: [
         {
-          flag: [],
+          flag: undefined,
           index: 103,
           type: 'parameter',
           value: 'Parameter 3',
@@ -529,11 +655,24 @@ multiple lines`,
       type: 'conditional_block',
       value: [],
     });
+    expect(maapInpParser.toString(program)).toBe(`USEREVT
+100 T Parameter Name
+102 Parameter 2
+ACTION #1
+103 Parameter 3
+ACTION #2
+
+END
+END
+IF VALUE IS T
+
+END
+END`);
   });
   test('function statements', async () => {
     const program = maapInpParser.parse(await readTestData('function.INP'))
-      .output.value;
-    expect(program[0]).toStrictEqual({
+      .output;
+    expect(program.value[0]).toStrictEqual({
       name: {
         type: 'identifier',
         value: 'name',
@@ -556,22 +695,22 @@ multiple lines`,
         },
       },
     });
+    expect(maapInpParser.toString(program)).toBe('FUNCTION name = 1 + 1');
   });
   test('set timer statements', async () => {
-    const program = maapInpParser.parse(await readTestData('timer.INP')).output
-      .value;
-    expect(program[0]).toStrictEqual({
+    const program = maapInpParser.parse(await readTestData('timer.INP')).output;
+    expect(program.value[0]).toStrictEqual({
       type: 'set_timer',
       value: {
         type: 'timer',
         value: 1,
       },
     });
+    expect(maapInpParser.toString(program)).toBe('SET TIMER #1');
   });
   test('lookup variable statements', async () => {
-    const program = maapInpParser.parse(await readTestData('lookup.INP')).output
-      .value;
-    expect(program[0]).toStrictEqual({
+    const program = maapInpParser.parse(await readTestData('lookup.INP')).output;
+    expect(program.value[0]).toStrictEqual({
       name: {
         type: 'identifier',
         value: 'VariableName',
@@ -582,6 +721,10 @@ multiple lines`,
         'It just gets separated by row',
       ],
     });
+    expect(maapInpParser.toString(program)).toBe(`LOOKUP VARIABLE VariableName
+You can type anything in here for now
+It just gets separated by row
+END`);
   });
 });
 
@@ -589,12 +732,12 @@ describe('program blocks', () => {
   test('source elements', async () => {
     const program = maapInpParser.parse(
       await readTestData('sourceElements.INP'),
-    ).output.value;
-    expect(program[0]).toStrictEqual({
+    ).output;
+    expect(program.value[0]).toStrictEqual({
       type: 'sensitivity',
       value: 'ON',
     });
-    expect(program[1]).toStrictEqual({
+    expect(program.value[1]).toStrictEqual({
       target: {
         type: 'identifier',
         value: 'Identifier',
@@ -606,7 +749,7 @@ describe('program blocks', () => {
         value: 1,
       },
     });
-    expect(program[2]).toStrictEqual({
+    expect(program.value[2]).toStrictEqual({
       arguments: [],
       type: 'call_expression',
       value: {
@@ -614,7 +757,7 @@ describe('program blocks', () => {
         value: 'Function',
       },
     });
-    expect(program[3]).toStrictEqual({
+    expect(program.value[3]).toStrictEqual({
       target: {
         type: 'identifier',
         value: 'Identifier',
@@ -625,6 +768,10 @@ describe('program blocks', () => {
         value: 'Value',
       },
     });
+    expect(maapInpParser.toString(program)).toBe(`SENSITIVITY ON
+Identifier = 1 HR
+Function()
+Identifier AS Value`);
   });
 });
 

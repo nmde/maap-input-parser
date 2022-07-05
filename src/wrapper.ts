@@ -1,5 +1,6 @@
 import type { Parser } from 'peggy';
 import safeMode from './safeMode';
+import toString from './toString';
 import { MAAPInpParser } from './types';
 
 /**
@@ -13,12 +14,12 @@ export default function wrapper(parser: Parser): MAAPInpParser {
     options: {
       safeMode: true,
     },
-    parse: (input, options) => {
-      return safeMode(parser, input, {
+    parse: (input, options) =>
+      safeMode(parser, input, {
         ...maapInpParser.options,
         ...options,
-      });
-    },
+      }),
+    toString: (input) => toString(input),
   };
   return maapInpParser;
 }

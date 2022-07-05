@@ -9,7 +9,7 @@ export type Literal = BooleanLiteral | NumericLiteral | TimerLiteral;
 export type NumericLiteral = {
   type: 'number';
   units?: string;
-  value: string;
+  value: number;
 };
 
 export type BooleanLiteral = {
@@ -195,4 +195,5 @@ export type MAAPInpParserOutput = {
 export type MAAPInpParser = {
   options: WrapperOptions;
   parse(input: string, options?: WrapperOptions): MAAPInpParserOutput;
+  toString(input: Program): string;
 };

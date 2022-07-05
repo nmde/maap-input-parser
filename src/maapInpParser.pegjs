@@ -66,9 +66,9 @@ Identifier = !Reserved head:[a-zA-Z0-9:]+ tail:(" " Identifier)? {
         value,
     }
 }
-Parameter = index:[0-9]+ _ flag:(BooleanLiteral / _)? value:FreeCharacter* {
+Parameter = index:[0-9]+ _ flag:(BooleanLiteral _)? value:FreeCharacter* {
 	return {
-    	flag,
+    	flag: (flag || [])[0],
         index: Number(index.join('')),
     	type: "parameter",
         value: extractList(value, 1).join('').trim(),

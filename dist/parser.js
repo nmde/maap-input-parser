@@ -355,7 +355,7 @@ function peg$parse(input, options) {
   };
   var peg$f7 = function(index, flag, value) {
   	return {
-      	flag,
+      	flag: (flag || [])[0],
           index: Number(index.join('')),
       	type: "parameter",
           value: extractList(value, 1).join('').trim(),
@@ -1525,9 +1525,15 @@ function peg$parse(input, options) {
     }
     if (s1 !== peg$FAILED) {
       s2 = peg$parse_();
-      s3 = peg$parseBooleanLiteral();
-      if (s3 === peg$FAILED) {
-        s3 = peg$parse_();
+      s3 = peg$currPos;
+      s4 = peg$parseBooleanLiteral();
+      if (s4 !== peg$FAILED) {
+        s5 = peg$parse_();
+        s4 = [s4, s5];
+        s3 = s4;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
       }
       if (s3 === peg$FAILED) {
         s3 = null;

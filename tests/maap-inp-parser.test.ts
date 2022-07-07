@@ -596,7 +596,7 @@ describe('expressions', () => {
             column: 11,
           },
         },
-        type: 'identifier',
+        type: 'parameter_name',
         value: 'START TIME',
       },
       type: 'is_expression',
@@ -647,7 +647,7 @@ describe('expressions', () => {
             column: 9,
           },
         },
-        type: 'identifier',
+        type: 'parameter_name',
         value: 'END TIME',
       },
       type: 'is_expression',
@@ -698,7 +698,7 @@ describe('expressions', () => {
             column: 15,
           },
         },
-        type: 'identifier',
+        type: 'parameter_name',
         value: 'PRINT INTERVAL',
       },
       type: 'is_expression',
@@ -840,7 +840,7 @@ multiple lines`,
         },
       },
       type: 'title',
-      value: null,
+      value: undefined,
     });
     expect(maapInpParser.toString(program)).toBe(
       'TITLE\nValid Title\nEND\nTITLE\nA title that\nextends onto\nmultiple lines\nEND\nTITLE\n\nEND',
@@ -898,7 +898,7 @@ multiple lines`,
           column: 15,
         },
       },
-      type: 'identifier',
+      type: 'parameter_name',
       value: 'PARAMETER FILE',
     });
     expect(program.value[3]).toStrictEqual({
@@ -2309,7 +2309,23 @@ END`);
       },
       index: 100,
       type: 'parameter',
-      value: 'Parameter Name',
+      value: {
+        location: {
+          source: undefined,
+          start: {
+            offset: 154,
+            line: 8,
+            column: 7,
+          },
+          end: {
+            offset: 168,
+            line: 8,
+            column: 21,
+          },
+        },
+        type: 'parameter_name',
+        value: 'Parameter Name',
+      },
     });
     expect(userEvt.value[1]).toStrictEqual({
       flag: undefined,
@@ -2328,7 +2344,23 @@ END`);
       },
       index: 102,
       type: 'parameter',
-      value: 'Parameter 2',
+      value: {
+        location: {
+          source: undefined,
+          start: {
+            offset: 204,
+            line: 11,
+            column: 5,
+          },
+          end: {
+            offset: 215,
+            line: 11,
+            column: 16,
+          },
+        },
+        type: 'parameter_name',
+        value: 'Parameter 2',
+      },
     });
     expect(userEvt.value[2]).toStrictEqual({
       index: 1,
@@ -2364,7 +2396,23 @@ END`);
           },
           index: 103,
           type: 'parameter',
-          value: 'Parameter 3',
+          value: {
+            location: {
+              source: undefined,
+              start: {
+                offset: 240,
+                line: 15,
+                column: 5,
+              },
+              end: {
+                offset: 251,
+                line: 15,
+                column: 16,
+              },
+            },
+            type: 'parameter_name',
+            value: 'Parameter 3',
+          },
         },
         {
           index: 2,
@@ -2826,70 +2874,70 @@ describe('safeMode', () => {
     });
     expect(safeParsed.errors.length).toBe(2);
     expect(safeParsed.output.value[0]).toStrictEqual({
-      blockType: 'INITIATORS',
       location: {
-        end: {
-          column: 4,
-          line: 6,
-          offset: 97,
-        },
         source: undefined,
         start: {
-          column: 1,
-          line: 2,
           offset: 25,
+          line: 2,
+          column: 1,
+        },
+        end: {
+          offset: 97,
+          line: 6,
+          column: 4,
         },
       },
+      blockType: 'INITIATORS',
       type: 'block',
       value: [
         {
           location: {
-            end: {
-              column: 18,
-              line: 3,
-              offset: 53,
-            },
             source: undefined,
             start: {
-              column: 1,
-              line: 3,
               offset: 36,
+              line: 3,
+              column: 1,
+            },
+            end: {
+              offset: 53,
+              line: 3,
+              column: 18,
             },
           },
-          type: 'identifier',
+          type: 'parameter_name',
           value: 'A VALID INITIATOR',
         },
         {
           location: {
-            end: {
-              column: 24,
-              line: 4,
-              offset: 77,
-            },
             source: undefined,
             start: {
-              column: 1,
-              line: 4,
               offset: 54,
+              line: 4,
+              column: 1,
+            },
+            end: {
+              offset: 77,
+              line: 4,
+              column: 24,
             },
           },
-          type: 'identifier',
+          type: 'parameter_name',
           value: 'ANOTHER VALID INITIATOR',
         },
       ],
     });
     expect(safeParsed.output.value[1]).toStrictEqual({
       location: {
-        end: {
-          column: 8,
-          line: 9,
-          offset: 123,
-        },
         source: undefined,
         start: {
-          column: 1,
-          line: 9,
           offset: 116,
+          line: 9,
+          column: 1,
+        },
+        end: {
+          offset: 123,
+          line: 9,
+          column: 8,
         },
       },
       type: 'identifier',

@@ -64,20 +64,6 @@ function booleanToString(booleanLiteral: t.BooleanLiteral): string {
 }
 
 /**
- * Compiles a Parameter into code.
- *
- * @param parameter - The object to compile.
- * @returns The compiled code.
- */
-function parameterToString(parameter: t.Parameter): string {
-  let re = `${parameter.index} `;
-  if (parameter.flag) {
-    re += `${booleanToString(parameter.flag)} `;
-  }
-  return `${re}${parameter.value}`;
-}
-
-/**
  * Compiles a TimerLiteral into code.
  *
  * @param timerLiteral - The object to compile.
@@ -113,6 +99,30 @@ function literalToString(literal: t.Literal): string {
  */
 function identifierToString(identifier: t.Identifier): string {
   return identifier.value;
+}
+
+/**
+ * Compiles a ParameterName into code.
+ *
+ * @param parameterName - The object to compile.
+ * @returns The compiled code.
+ */
+function parameterNameToString(parameterName: t.ParameterName): string {
+  return parameterName.value;
+}
+
+/**
+ * Compiles a Parameter into code.
+ *
+ * @param parameter - The object to compile.
+ * @returns The compiled code.
+ */
+function parameterToString(parameter: t.Parameter): string {
+  let re = `${parameter.index} `;
+  if (parameter.flag) {
+    re += `${booleanToString(parameter.flag)} `;
+  }
+  return `${re}${parameterNameToString(parameter.value)}`;
 }
 
 /**
@@ -224,6 +234,8 @@ function isExpressionToString(isExpression: t.IsExpression): string {
   let target = '';
   if (isExpression.target.type === 'call_expression') {
     target = callExpressionToString(isExpression.target);
+  } else if (isExpression.target.type === 'parameter_name') {
+    target = parameterNameToString(isExpression.target);
   } else {
     target = identifierToString(isExpression.target);
   }

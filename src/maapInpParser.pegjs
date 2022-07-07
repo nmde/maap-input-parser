@@ -2,6 +2,9 @@
 	function extractList(list, index) {
     	return list.map(i => i[index]);
     }
+    function safeValue(value) {
+    	return (value || [])[0] || [];
+    }
 }
 
 Start = __ program:Program __ {
@@ -58,24 +61,32 @@ BooleanLiteral = v:(TRUE / FALSE / T / F) ![a-zA-Z] {
     }
 }
 Reserved = (END / IS / AS) ![a-zA-Z]
-Identifier = !Reserved head:[a-zA-Z0-9:]+ tail:(" " Identifier)? {
-	let value = head.join('');
-    if (tail) {
-    	value += " " + tail[1].value;
-    }
+Identifier = !Reserved value:[a-zA-Z0-9]+ {
 	return {
     	location: location(),
     	type: "identifier",
+        value: value.join(''),
+    }
+}
+ParameterNameCharacter = [a-zA-Z0-9:()]
+ParameterName = !Reserved head:ParameterNameCharacter+ tail:(_ !Reserved  ParameterNameCharacter+)+ {
+	let value = head.join('');
+    if (tail) {
+    	value += ' ' + extractList(tail, 2).map((item) => item.join('')).join(' ');
+    }
+	return {
+    	location: location(),
+        type: "parameter_name",
         value,
     }
 }
-Parameter = index:[0-9]+ _ flag:(BooleanLiteral _)? value:FreeCharacter* {
+Parameter = index:[0-9]+ _ flag:(BooleanLiteral _)? value:ParameterName {
 	return {
     	flag: (flag || [])[0],
         location: location(),
         index: Number(index.join('')),
     	type: "parameter",
-        value: extractList(value, 1).join('').trim(),
+        value,
     }
 }
 TimerLiteral = TIMER _ "#"? n:[0-9]+ {
@@ -115,6 +126,7 @@ TRUE = "TRUE"i
 USEREVT = "USEREVT"i
 WHEN = "WHEN"i
 
+___ = (WhiteSpace / LineTerminatorSequence / Comment)+
 __ = (WhiteSpace / LineTerminatorSequence / Comment)*
 _ = WhiteSpace*
 
@@ -165,7 +177,7 @@ Assignment = target:(CallExpression / Identifier) _ "=" _ value:Expr {
         value,
     }
 }
-IsExpression = target:(CallExpression / Identifier) _ IS _ value:Expr {
+IsExpression = target:(CallExpression / ParameterName / Identifier) _ IS _ value:Expr {
 	return {
     	location: location(),
     	target,
@@ -201,20 +213,20 @@ Statement = value:(SensitivityStatement
         ...value,
     }
 }
-SensitivityStatement = SENSITIVITY __ value:(ON / OFF) {
+SensitivityStatement = SENSITIVITY ___ value:(ON / OFF) {
 	return {
     	location: location(),
     	type: "sensitivity",
         value,
     }
 }
-TitleStatement = TITLE __ value:TitleBlock? __ END {
+TitleStatement = TITLE ___ value:(TitleBlock ___)? END {
 	return {
     	type: "title",
-        value,
+        value: (value || [])[0],
     }
 }
-TitleBlock = !END first:FreeCharacter+ rest:(__ TitleBlock)? {
+TitleBlock = !END first:FreeCharacter+ rest:(___ TitleBlock)? {
 	let title = extractList(first, 1).join('');
     if (rest) {
     	title += '\n' + rest[1];
@@ -228,35 +240,35 @@ FileStatement = fileType:(PARAMETER_FILE / INCLUDE) _ v:FreeCharacter+ {
         value: extractList(v, 1).join(''),
     }
 }
-BlockStatement = blockType:(PARAMETER_CHANGE / INITIATORS) __ value:SourceElements? __ END {
+BlockStatement = blockType:(PARAMETER_CHANGE / INITIATORS) ___ value:(SourceElements ___)? END {
 	return {
     	blockType,
         type: "block",
-        value: value || [],
+        value: safeValue(value),
     }
 }
-ConditionalBlockStatement = blockType:(WHEN / IF) _ test:Expr __ value:SourceElements? __ END {
+ConditionalBlockStatement = blockType:(WHEN / IF) _ test:Expr ___ value:(SourceElements ___)? END {
 	return {
     	blockType,
     	test,
     	type: "conditional_block",
-        value: value || [],
+        value: safeValue(value),
     }
 }
-AliasStatement = ALIAS __ value:AliasBody? __ END {
+AliasStatement = ALIAS ___ value:(AliasBody ___)? END {
 	return {
     	type: "alias",
-        value: value || [],
+        value: safeValue(value),
     }
 }
-AliasBody = head:AsExpression tail:(__ AsExpression)* {
+AliasBody = head:AsExpression tail:(___ AsExpression)* {
 	return [head].concat(extractList(tail, 1));
 }
-PlotFilStatement = PLOTFIL _ n:[0-9]+ __ value:PlotFilBody? __ END {
+PlotFilStatement = PLOTFIL _ n:[0-9]+ ___ value:(PlotFilBody ___)? END {
 	return {
     	n: Number(n.join('')),
     	type: "plotfil",
-        value: value || [],
+        value: safeValue(value),
     }
 }
 PlotFilList = head:(CallExpression / ExpressionMember) tail:(_ "," _ PlotFilList)* {
@@ -266,29 +278,29 @@ PlotFilList = head:(CallExpression / ExpressionMember) tail:(_ "," _ PlotFilList
     }
 	return value;
 }
-PlotFilBody = head:PlotFilList tail:(__ PlotFilBody)* {
+PlotFilBody = head:PlotFilList tail:(___ PlotFilBody)* {
 	let value = [head];
     if (tail && tail.length > 0) {
     	value = value.concat(extractList(tail, 1)[0]);
     }
 	return value;
 }
-UserEvtStatement = USEREVT __ value:UserEvtBody? __ END {
+UserEvtStatement = USEREVT ___ value:(UserEvtBody ___)? END {
 	return {
     	type: "user_evt",
-        value: value || [],
+        value: safeValue(value),
     }
 }
-UserEvtBody = head:UserEvtElement tail:(__ UserEvtElement)* {
+UserEvtBody = head:UserEvtElement tail:(___ UserEvtElement)* {
 	return [head].concat(extractList(tail, 1));
 }
 UserEvtElement = Parameter / ActionStatement / SourceElement
-ActionStatement = ACTION _ "#" n:[0-9]+ __ value:UserEvtBody? __ END {
+ActionStatement = ACTION _ "#" n:[0-9]+ ___ value:(UserEvtBody ___)? END {
 	return {
     	index: Number(n.join('')),
         location: location(),
     	type: "action",
-        value: value || [],
+        value: safeValue(value),
     }
 }
 FunctionStatement = FUNCTION _ name:Identifier _ "=" _ value:Expr {
@@ -304,14 +316,14 @@ TimerStatement = SET _ value:TimerLiteral {
         value,
     }
 }
-LookupStatement = LOOKUP_VARIABLE _ name:Variable __ value:LookupBody? __ END {
+LookupStatement = LOOKUP_VARIABLE _ name:Variable ___ value:(LookupBody ___)? END {
 	return {
 		name,
     	type: "lookup_variable",
-        value,
+        value: safeValue(value),
     }
 }
-LookupBody = !Reserved head:FreeCharacter+ tail:(__ LookupBody)* {
+LookupBody = !Reserved head:FreeCharacter+ tail:(___ LookupBody)* {
 	let value = [extractList(head, 1).join('')];
     if (tail && tail.length > 0) {
     	value = value.concat(extractList(tail, 1)[0]);
@@ -326,7 +338,16 @@ Program = value:SourceElements? {
         value: value || [],
     }
 }
-SourceElements = head:SourceElement tail:(__ SourceElement)* {
+SourceElements = head:SourceElement tail:(___ SourceElement)* {
 	return [head].concat(extractList(tail, 1));
 }
-SourceElement = Statement / Assignment / AsExpression / Expr
+SourceElement = Statement
+	/ Assignment
+	/ AsExpression
+	/ IsExpression
+	/ Expression
+	/ CallExpression
+	/ ExpressionBlock
+	/ ParameterName
+    / Literal
+	/ Identifier

@@ -26,11 +26,16 @@ export type Identifier = Location & {
   value: string;
 };
 
+export type ParameterName = Location & {
+  type: 'parameter_name';
+  value: string;
+};
+
 export type Parameter = Location & {
   flag?: BooleanLiteral;
   index: number;
   type: 'parameter';
-  value: string;
+  value: ParameterName;
 };
 
 export type TimerLiteral = Location & {
@@ -85,7 +90,7 @@ export type Assignment = Location & {
 };
 
 export type IsExpression = Location & {
-  target: CallExpression | Identifier;
+  target: CallExpression | ParameterName | Identifier;
   type: 'is_expression';
   value: Expression;
 };
@@ -120,7 +125,7 @@ export type SensitivityStatement = Location & {
 
 export type TitleStatement = Location & {
   type: 'title';
-  value: string;
+  value?: string;
 };
 
 export type FileStatement = Location & {
@@ -188,7 +193,7 @@ export type Program = {
   value: SourceElement[];
 };
 
-export type SourceElement = Statement | Assignment | AsExpression | Expression;
+export type SourceElement = Statement | Assignment | AsExpression | IsExpression | Expression | CallExpression | ExpressionBlock | ParameterName | Literal | Identifier;
 
 export type MAAPInpParserOutput = {
   errors: PEG.parser.SyntaxError[];

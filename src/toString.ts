@@ -231,15 +231,7 @@ function assignmentToString(assignment: t.Assignment): string {
  * @returns The compiled code.
  */
 function isExpressionToString(isExpression: t.IsExpression): string {
-  let target = '';
-  if (isExpression.target.type === 'call_expression') {
-    target = callExpressionToString(isExpression.target);
-  } else if (isExpression.target.type === 'parameter_name') {
-    target = parameterNameToString(isExpression.target);
-  } else {
-    target = identifierToString(isExpression.target);
-  }
-  return `${target} IS ${expressionToString(isExpression.value)}`;
+  return `${variableToString(isExpression.target)} IS ${expressionToString(isExpression.value)}`;
 }
 
 /**
@@ -249,13 +241,7 @@ function isExpressionToString(isExpression: t.IsExpression): string {
  * @returns The compiled code.
  */
 function asExpressionToString(asExpression: t.AsExpression): string {
-  let target = '';
-  if (asExpression.target.type === 'call_expression') {
-    target = callExpressionToString(asExpression.target);
-  } else {
-    target = identifierToString(asExpression.target);
-  }
-  return `${target} AS ${identifierToString(asExpression.value)}`;
+  return `${variableToString(asExpression.target)} AS ${identifierToString(asExpression.value)}`;
 }
 
 /**
@@ -284,6 +270,8 @@ function expressionToString(expression: t.Expression): string {
 function variableToString(variable: t.Variable) {
   if (variable.type === 'call_expression') {
     return callExpressionToString(variable);
+  } else if (variable.type === 'parameter_name') {
+    return parameterNameToString(variable);
   }
   return expressionMemberToString(variable);
 }

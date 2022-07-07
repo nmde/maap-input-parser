@@ -177,7 +177,7 @@ Assignment = target:(CallExpression / Identifier) _ "=" _ value:Expr {
         value,
     }
 }
-IsExpression = target:(CallExpression / ParameterName / Identifier) _ IS _ value:Expr {
+IsExpression = target:Variable _ IS _ value:Expr {
 	return {
     	location: location(),
     	target,
@@ -185,7 +185,7 @@ IsExpression = target:(CallExpression / ParameterName / Identifier) _ IS _ value
         value,
     }
 }
-AsExpression = target:(CallExpression / Identifier) _ AS _ value:Identifier {
+AsExpression = target:Variable _ AS _ value:Variable {
 	return {
     	location: location(),
     	target,
@@ -194,7 +194,7 @@ AsExpression = target:(CallExpression / Identifier) _ AS _ value:Identifier {
     }
 }
 Expr = IsExpression / Expression / ExpressionType
-Variable = CallExpression / ExpressionMember
+Variable = CallExpression / ParameterName / ExpressionMember
 
 /* Statements */
 Statement = value:(SensitivityStatement

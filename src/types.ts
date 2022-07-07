@@ -90,20 +90,20 @@ export type Assignment = Location & {
 };
 
 export type IsExpression = Location & {
-  target: CallExpression | ParameterName | Identifier;
+  target: Variable;
   type: 'is_expression';
   value: Expression;
 };
 
 export type AsExpression = Location & {
-  target: CallExpression | Identifier;
+  target: Variable;
   type: 'as_expression';
   value: Identifier;
 };
 
 export type Expression = IsExpression | PureExpression | ExpressionType;
 
-export type Variable = CallExpression | ExpressionMember;
+export type Variable = CallExpression | ParameterName | ExpressionMember;
 
 export type Statement =
   | SensitivityStatement

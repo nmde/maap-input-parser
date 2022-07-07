@@ -68,8 +68,8 @@ Identifier = !Reserved value:[a-zA-Z0-9]+ {
         value: value.join(''),
     }
 }
-ParameterNameCharacter = [a-zA-Z0-9:()]
-ParameterName = !Reserved head:ParameterNameCharacter+ tail:(_ !Reserved  ParameterNameCharacter+)+ {
+ParameterNameCharacter = [a-zA-Z0-9:()|]
+ParameterName = !Reserved head:ParameterNameCharacter+ tail:(_ !Reserved ParameterNameCharacter+)+ {
 	let value = head.join('');
     if (tail) {
     	value += ' ' + extractList(tail, 2).map((item) => item.join('')).join(' ');
@@ -80,7 +80,7 @@ ParameterName = !Reserved head:ParameterNameCharacter+ tail:(_ !Reserved  Parame
         value,
     }
 }
-Parameter = index:[0-9]+ _ flag:(BooleanLiteral _)? value:ParameterName {
+Parameter = index:[0-9]+ _ flag:(BooleanLiteral _)? value:(Expr / ParameterName) {
 	return {
     	flag: (flag || [])[0],
         location: location(),
@@ -131,9 +131,6 @@ __ = (WhiteSpace / LineTerminatorSequence / Comment)*
 _ = WhiteSpace*
 
 /* Expressions */
-ExpressionMember = value:(Literal / Identifier) {
-	return value;
-}
 Arguments = value:ExpressionType rest:(_ "," _ Arguments)? {
 	let args = [value];
     if (rest) {
@@ -168,7 +165,7 @@ ExpressionBlock = "(" value:Expression ")" {
         value,
     }
 }
-ExpressionType = CallExpression / ExpressionBlock / ExpressionMember
+ExpressionType = CallExpression / ExpressionBlock / Variable
 Assignment = target:(CallExpression / Identifier) _ "=" _ value:Expr {
 	return {
     	location: location(),
@@ -194,7 +191,7 @@ AsExpression = target:Variable _ AS _ value:Variable {
     }
 }
 Expr = IsExpression / Expression / ExpressionType
-Variable = CallExpression / ParameterName / ExpressionMember
+Variable = CallExpression / Literal / ParameterName / Identifier
 
 /* Statements */
 Statement = value:(SensitivityStatement
@@ -271,7 +268,7 @@ PlotFilStatement = PLOTFIL _ n:[0-9]+ ___ value:(PlotFilBody ___)? END {
         value: safeValue(value),
     }
 }
-PlotFilList = head:(CallExpression / ExpressionMember) tail:(_ "," _ PlotFilList)* {
+PlotFilList = head:Variable tail:(_ "," _ PlotFilList)* {
 	let value = [head];
     if (tail && tail.length > 0) {
     	value = value.concat(extractList(tail, 3)[0]);

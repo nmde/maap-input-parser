@@ -122,20 +122,12 @@ function parameterToString(parameter: t.Parameter): string {
   if (parameter.flag) {
     re += `${booleanToString(parameter.flag)} `;
   }
-  return `${re}${parameterNameToString(parameter.value)}`;
-}
-
-/**
- * Compiles ExpressionMember into code.
- *
- * @param expressionMember - The object to compile.
- * @returns The compiled code.
- */
-function expressionMemberToString(expressionMember: t.ExpressionMember) {
-  if (isLiteral(expressionMember.type)) {
-    return literalToString(expressionMember as t.Literal);
+  if (parameter.value.type === 'parameter_name') {
+    re += parameterNameToString(parameter.value);
+  } else {
+    re += expressionToString(parameter.value);
   }
-  return identifierToString(expressionMember as t.Identifier);
+  return re;
 }
 
 /**
@@ -205,7 +197,7 @@ function expressionTypeToString(expressionType: t.ExpressionType): string {
   if (expressionType.type === 'expression_block') {
     return expressionBlockToString(expressionType);
   }
-  return expressionMemberToString(expressionType);
+  return variableToString(expressionType);
 }
 
 /**
@@ -231,7 +223,9 @@ function assignmentToString(assignment: t.Assignment): string {
  * @returns The compiled code.
  */
 function isExpressionToString(isExpression: t.IsExpression): string {
-  return `${variableToString(isExpression.target)} IS ${expressionToString(isExpression.value)}`;
+  return `${variableToString(isExpression.target)} IS ${expressionToString(
+    isExpression.value,
+  )}`;
 }
 
 /**
@@ -241,7 +235,9 @@ function isExpressionToString(isExpression: t.IsExpression): string {
  * @returns The compiled code.
  */
 function asExpressionToString(asExpression: t.AsExpression): string {
-  return `${variableToString(asExpression.target)} AS ${identifierToString(asExpression.value)}`;
+  return `${variableToString(asExpression.target)} AS ${identifierToString(
+    asExpression.value,
+  )}`;
 }
 
 /**
@@ -270,10 +266,12 @@ function expressionToString(expression: t.Expression): string {
 function variableToString(variable: t.Variable) {
   if (variable.type === 'call_expression') {
     return callExpressionToString(variable);
+  } else if (isLiteral(variable.type)) {
+    return literalToString(variable as t.Literal);
   } else if (variable.type === 'parameter_name') {
     return parameterNameToString(variable);
   }
-  return expressionMemberToString(variable);
+  return identifierToString(variable as t.Identifier);
 }
 
 /**
@@ -391,14 +389,7 @@ function aliasToString(aliasStatement: t.AliasStatement): string {
 function plotfilToString(plotfilStatement: t.PlotFilStatement): string {
   return `PLOTFIL ${plotfilStatement.n}\n${plotfilStatement.value
     .map((plotFilBody) =>
-      plotFilBody
-        .map((plotFilList) => {
-          if (plotFilList.type === 'call_expression') {
-            return callExpressionToString(plotFilList);
-          }
-          return expressionMemberToString(plotFilList);
-        })
-        .join(','),
+      plotFilBody.map((plotFilList) => variableToString(plotFilList)).join(','),
     )
     .join('\n')}\nEND`;
 }
@@ -504,7 +495,9 @@ function sourceElementToString(sourceElement: t.SourceElement): string {
  * @param input - The object to compile.
  * @returns The compiled program.
  */
-export default function toString(input: t.Program | t.UserEvtElement | t.Literal | t.Identifier): string {
+export default function toString(
+  input: t.Program | t.UserEvtElement | t.Literal | t.Identifier,
+): string {
   if (isStatement(input.type)) {
     return statementToString(input as t.Statement);
   }

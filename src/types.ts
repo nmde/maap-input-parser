@@ -35,15 +35,13 @@ export type Parameter = Location & {
   flag?: BooleanLiteral;
   index: number;
   type: 'parameter';
-  value: ParameterName;
+  value: Expression | ParameterName;
 };
 
 export type TimerLiteral = Location & {
   type: 'timer';
   value: number;
 };
-
-export type ExpressionMember = Literal | Identifier;
 
 export type Arguments = ExpressionType[];
 
@@ -81,7 +79,7 @@ export type ExpressionBlock = Location & {
 export type ExpressionType =
   | CallExpression
   | ExpressionBlock
-  | ExpressionMember;
+  | Variable;
 
 export type Assignment = Location & {
   target: CallExpression | Identifier;
@@ -103,7 +101,7 @@ export type AsExpression = Location & {
 
 export type Expression = IsExpression | PureExpression | ExpressionType;
 
-export type Variable = CallExpression | ParameterName | ExpressionMember;
+export type Variable = CallExpression | Literal | ParameterName | Identifier;
 
 export type Statement =
   | SensitivityStatement
@@ -155,7 +153,7 @@ export type AliasStatement = Location & {
 export type PlotFilStatement = Location & {
   n: number;
   type: 'plotfil';
-  value: (CallExpression | ExpressionMember)[][];
+  value: Variable[][];
 };
 
 export type UserEvtStatement = Location & {

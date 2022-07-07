@@ -28,6 +28,7 @@ Units = first:[a-zA-Z0-9]+ rest:(("**" / "/") Units)? {
 }
 NumericLiteral = literal:DecimalLiteral !(IdentifierStart / DecimalDigit) units:(_ Units)? {
 	return {
+    	location: location(),
     	type: "number",
         units: (units || [])[1],
         value: literal,
@@ -51,6 +52,7 @@ SignedInteger = [+-]? DecimalDigit+
 BooleanLiteral = v:(TRUE / FALSE / T / F) ![a-zA-Z] {
 	let value = v === 'TRUE' || v === 'T';
 	return {
+    	location: location(),
     	type: "boolean",
         value,
     }
@@ -62,6 +64,7 @@ Identifier = !Reserved head:[a-zA-Z0-9:]+ tail:(" " Identifier)? {
     	value += " " + tail[1].value;
     }
 	return {
+    	location: location(),
     	type: "identifier",
         value,
     }
@@ -69,6 +72,7 @@ Identifier = !Reserved head:[a-zA-Z0-9:]+ tail:(" " Identifier)? {
 Parameter = index:[0-9]+ _ flag:(BooleanLiteral _)? value:FreeCharacter* {
 	return {
     	flag: (flag || [])[0],
+        location: location(),
         index: Number(index.join('')),
     	type: "parameter",
         value: extractList(value, 1).join('').trim(),
@@ -76,6 +80,7 @@ Parameter = index:[0-9]+ _ flag:(BooleanLiteral _)? value:FreeCharacter* {
 }
 TimerLiteral = TIMER _ "#"? n:[0-9]+ {
 	return {
+    	location: location(),
     	type: "timer",
         value: Number(n.join('')),
     }
@@ -127,6 +132,7 @@ Arguments = value:ExpressionType rest:(_ "," _ Arguments)? {
 CallExpression = value:Identifier _ "(" args:Arguments? ")" {
 	return {
     	arguments: args || [],
+        location: location(),
     	type: "call_expression",
         value,
     }
@@ -134,6 +140,7 @@ CallExpression = value:Identifier _ "(" args:Arguments? ")" {
 ExpressionOperator = "**" / "*" / "/" / ">=" / "<=" / ">" / "<" / "+" / "-"
 Expression = left:ExpressionType _ op:ExpressionOperator _ right:(Expression / ExpressionType) {
 	return {
+    	location: location(),
     	type: "expression",
         value: {
         	left,
@@ -144,6 +151,7 @@ Expression = left:ExpressionType _ op:ExpressionOperator _ right:(Expression / E
 }
 ExpressionBlock = "(" value:Expression ")" {
 	return {
+    	location: location(),
     	type: "expression_block",
         value,
     }
@@ -151,6 +159,7 @@ ExpressionBlock = "(" value:Expression ")" {
 ExpressionType = CallExpression / ExpressionBlock / ExpressionMember
 Assignment = target:(CallExpression / Identifier) _ "=" _ value:Expr {
 	return {
+    	location: location(),
     	target,
     	type: "assignment",
         value,
@@ -158,6 +167,7 @@ Assignment = target:(CallExpression / Identifier) _ "=" _ value:Expr {
 }
 IsExpression = target:(CallExpression / Identifier) _ IS _ value:Expr {
 	return {
+    	location: location(),
     	target,
     	type: "is_expression",
         value,
@@ -165,6 +175,7 @@ IsExpression = target:(CallExpression / Identifier) _ IS _ value:Expr {
 }
 AsExpression = target:(CallExpression / Identifier) _ AS _ value:Identifier {
 	return {
+    	location: location(),
     	target,
     	type: "as_expression",
         value,
@@ -174,7 +185,7 @@ Expr = IsExpression / Expression / ExpressionType
 Variable = CallExpression / ExpressionMember
 
 /* Statements */
-Statement = SensitivityStatement
+Statement = value:(SensitivityStatement
 	/ TitleStatement
     / FileStatement
     / BlockStatement
@@ -184,9 +195,15 @@ Statement = SensitivityStatement
     / UserEvtStatement
     / FunctionStatement
     / TimerStatement
-    / LookupStatement
+    / LookupStatement) {
+    return {
+    	location: location(),
+        ...value,
+    }
+}
 SensitivityStatement = SENSITIVITY __ value:(ON / OFF) {
 	return {
+    	location: location(),
     	type: "sensitivity",
         value,
     }
@@ -269,6 +286,7 @@ UserEvtElement = Parameter / ActionStatement / SourceElement
 ActionStatement = ACTION _ "#" n:[0-9]+ __ value:UserEvtBody? __ END {
 	return {
     	index: Number(n.join('')),
+        location: location(),
     	type: "action",
         value: value || [],
     }

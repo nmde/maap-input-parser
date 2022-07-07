@@ -1,5 +1,5 @@
 ** Tests userevt statements **
-** Also special blocks that appear only in USEREVT: Parameter, 
+** Also special blocks that appear only in USEREVT: Parameter, Action
 
 C Default
 USEREVT

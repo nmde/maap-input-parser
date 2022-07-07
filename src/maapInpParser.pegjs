@@ -149,7 +149,7 @@ CallExpression = value:Identifier _ "(" args:Arguments? ")" {
         value,
     }
 }
-ExpressionOperator = "**" / "*" / "/" / ">=" / "<=" / ">" / "<" / "+" / "-"
+ExpressionOperator = "**" / "*" / "/" / ">=" / "<=" / ">" / "<" / "+" / "-" / "AND"
 Expression = left:ExpressionType _ op:ExpressionOperator _ right:(Expression / ExpressionType) {
 	return {
     	location: location(),

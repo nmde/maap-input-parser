@@ -1,7 +1,7 @@
+import { MAAPInpParser } from 'maap-inp-parser';
 import type { Parser } from 'peggy';
 import safeMode from './safeMode';
 import toString from './toString';
-import { MAAPInpParser } from './types';
 
 /**
  * Wraps the parser with additional logic.

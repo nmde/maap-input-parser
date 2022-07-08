@@ -1,8 +1,8 @@
 /* eslint-disable sort-keys */
 import fs from 'fs/promises';
+import * as t from 'maap-inp-parser';
 import path from 'path';
 import peggy from 'peggy';
-import * as t from '../src/types';
 import wrapper from '../src/wrapper';
 import { readTestData } from './util';
 

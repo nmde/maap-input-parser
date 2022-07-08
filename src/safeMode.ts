@@ -1,5 +1,5 @@
+import { MAAPInpParserOutput, WrapperOptions } from 'maap-inp-parser';
 import type { Parser } from 'peggy';
-import type { MAAPInpParserOutput, WrapperOptions } from './types';
 
 /**
  * Attempts to avoid parsing errors by commenting out problematic lines and re-parsing.

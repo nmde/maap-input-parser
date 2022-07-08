@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import * as t from './types';
+import * as t from 'maap-inp-parser';
 
 /**
  * Checks if a type is a literal.

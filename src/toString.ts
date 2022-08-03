@@ -525,6 +525,8 @@ export default function toString(
       return asExpressionToString(input);
     case 'identifier':
       return identifierToString(input);
+    case 'parameter_name':
+      return parameterNameToString(input);
     default:
       throw new Error(`Unexpected input type: ${input.type}`);
   }

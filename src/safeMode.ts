@@ -17,10 +17,25 @@ export default function safeMode(
   errors: PEG.parser.SyntaxError[] = [],
 ): MAAPInpParserOutput {
   try {
+    const output = parser.parse(input, options);
+    if (!options?.locations) {
+      /**
+       * Removes the location data returned by Peggy.
+       *
+       * @param o - The object to clean.
+       */
+      const stripLocations = (o: any) => {
+        delete o.location;
+        if (typeof o === 'object') {
+          Object.values(o).forEach((v) => stripLocations(v));
+        }
+      };
+      stripLocations(output);
+    }
     return {
       errors,
       input,
-      output: parser.parse(input, options),
+      output,
     };
   } catch (err) {
     const syntaxError = err as PEG.parser.SyntaxError;

@@ -12,6 +12,7 @@ import toString from './toString';
 export default function wrapper(parser: Parser): MAAPInpParser {
   const maapInpParser: MAAPInpParser = {
     options: {
+      locations: false,
       safeMode: true,
     },
     parse: (input, options) =>

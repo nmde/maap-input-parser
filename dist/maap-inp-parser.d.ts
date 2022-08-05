@@ -6,6 +6,7 @@ declare module 'maap-inp-parser' {
   };
 
   export type WrapperOptions = ParserOptions & {
+    locations?: boolean;
     safeMode?: boolean;
   };
 

@@ -19,7 +19,12 @@ LineTerminator = [\n\r\u2028\u2029]
 LineTerminatorSequence = "\n" / "\r\n" / "\r" / "\u2028" / "\u2029"
 Comment = SingleLineComment
 CommentIndicator = "//" / "!" / "C " / "**"
-SingleLineComment = CommentIndicator v:FreeCharacter*
+SingleLineComment = CommentIndicator v:FreeCharacter* {
+	return {
+    	type: "comment",
+        value: extractList(v,1).join(''),
+    }
+}
 IdentifierStart = [a-zA-Z] / "$" / "_" / "\\"
 Literal = BooleanLiteral / NumericLiteral / TimerLiteral
 Units = first:[a-zA-Z0-9]+ rest:(("**" / "/") Units)? {
@@ -126,8 +131,12 @@ TRUE = "TRUE"i
 USEREVT = "USEREVT"i
 WHEN = "WHEN"i
 
-___ = (WhiteSpace / LineTerminatorSequence / Comment)+
-__ = (WhiteSpace / LineTerminatorSequence / Comment)*
+___ = v:(WhiteSpace / LineTerminatorSequence / Comment)+ {
+	return v.filter((x) => x.type === "comment");
+}
+__ = v:(WhiteSpace / LineTerminatorSequence / Comment)* {
+	return v.filter((x) => x.type === "comment");
+}
 _ = WhiteSpace*
 
 /* Expressions */
@@ -336,7 +345,14 @@ Program = value:SourceElements? {
     }
 }
 SourceElements = head:SourceElement tail:(___ SourceElement)* {
-	return [head].concat(extractList(tail, 1));
+	let re = [head];
+    for (let i = 0; i < tail.length; i += 1) {
+    	for (let j = 0; j < tail[i][0].length; j += 1) {
+        	re = re.concat(tail[i][0][j]);
+        }
+        re = re.concat(tail[i][1]);
+    }
+    return re;
 }
 SourceElement = Statement
 	/ Assignment

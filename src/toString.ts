@@ -476,7 +476,10 @@ function lookupToString(lookupStatement: t.LookupStatement): string {
  * @param sourceElement - The object to compile.
  * @returns The compiled code.
  */
-function sourceElementToString(sourceElement: t.SourceElement): string {
+function sourceElementToString(sourceElement: t.SourceElement | t.Comment): string {
+  if (sourceElement.type === 'comment') {
+    return `// ${sourceElement.value}`;
+  }
   if (isStatement(sourceElement.type)) {
     return statementToString(sourceElement as t.Statement);
   }

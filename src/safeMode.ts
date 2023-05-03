@@ -25,7 +25,9 @@ export default function safeMode(
        * @param o - The object to clean.
        */
       const stripLocations = (o: any) => {
-        delete o.location;
+        if (o) {
+          delete o.location;
+        }
         if (typeof o === 'object') {
           Object.values(o).forEach((v) => stripLocations(v));
         }

@@ -185,9 +185,14 @@ declare module 'maap-inp-parser' {
     value: string[];
   };
 
+  export type Comment = {
+    type: 'comment';
+    value: string;
+  };
+
   export type Program = {
     type: 'program';
-    value: SourceElement[];
+    value: (SourceElement | Comment)[];
   };
 
   export type SourceElement =
@@ -211,6 +216,6 @@ declare module 'maap-inp-parser' {
   export type MAAPInpParser = {
     options: WrapperOptions;
     parse(input: string, options?: WrapperOptions): MAAPInpParserOutput;
-    toString(input: any): string;
+    toString(input: Program | UserEvtElement | Literal | Identifier): string;
   };
 }

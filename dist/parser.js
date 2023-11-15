@@ -576,7 +576,14 @@ function peg$parse(input, options) {
       }
   };
   var peg$f39 = function(head, tail) {
-  	return [head].concat(...tail[0]).concat(extractList(tail, 1));
+  	let re = [head];
+      for (let i = 0; i < tail.length; i += 1) {
+      	for (let j = 0; j < tail[i][0].length; j += 1) {
+          	re = re.concat(tail[i][0][j]);
+          }
+          re = re.concat(tail[i][1]);
+      }
+      return re;
   };
 
   var peg$currPos = 0;

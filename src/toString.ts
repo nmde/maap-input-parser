@@ -471,6 +471,16 @@ function lookupToString(lookupStatement: t.LookupStatement): string {
 }
 
 /**
+ * Copmiles a comment into code.
+ *
+ * @param comment - The object to compile.
+ * @returns The compiled code.
+ */
+function commentToString(comment: t.Comment): string {
+  return `// ${comment.value}`;
+}
+
+/**
  * Compiles the given SourceElement object into code.
  *
  * @param sourceElement - The object to compile.
@@ -478,7 +488,7 @@ function lookupToString(lookupStatement: t.LookupStatement): string {
  */
 function sourceElementToString(sourceElement: t.SourceElement | t.Comment): string {
   if (sourceElement.type === 'comment') {
-    return `// ${sourceElement.value}`;
+    return commentToString(sourceElement);
   }
   if (isStatement(sourceElement.type)) {
     return statementToString(sourceElement as t.Statement);
@@ -499,7 +509,7 @@ function sourceElementToString(sourceElement: t.SourceElement | t.Comment): stri
  * @returns The compiled program.
  */
 export default function toString(
-  input: t.Program | t.UserEvtElement | t.Literal | t.Identifier,
+  input: t.Program | t.UserEvtElement | t.Literal | t.Identifier | t.Comment,
 ): string {
   if (isStatement(input.type)) {
     return statementToString(input as t.Statement);
@@ -530,6 +540,8 @@ export default function toString(
       return identifierToString(input);
     case 'parameter_name':
       return parameterNameToString(input);
+    case 'comment':
+      return commentToString(input);
     default:
       throw new Error(`Unexpected input type: ${input.type}`);
   }

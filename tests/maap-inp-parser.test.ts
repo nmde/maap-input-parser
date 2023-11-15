@@ -36,10 +36,14 @@ describe('literals', () => {
       value: false,
     });
     expect(program.value[2]).toStrictEqual({
+      type: 'comment',
+      value: 'Shorthand',
+    });
+    expect(program.value[3]).toStrictEqual({
       type: 'boolean',
       value: true,
     });
-    expect(program.value[3]).toStrictEqual({
+    expect(program.value[4]).toStrictEqual({
       type: 'boolean',
       value: false,
     });
@@ -55,21 +59,25 @@ describe('literals', () => {
       value: 1,
     });
     expect(program.value[1]).toStrictEqual({
-      type: 'number',
-      units: undefined,
-      value: 2,
+      type: 'comment',
+      value: 'Decimal',
     });
     expect(program.value[2]).toStrictEqual({
       type: 'number',
       units: undefined,
-      value: 3,
+      value: 2,
     });
     expect(program.value[3]).toStrictEqual({
       type: 'number',
       units: undefined,
+      value: 3,
+    });
+    expect(program.value[5]).toStrictEqual({
+      type: 'number',
+      units: undefined,
       value: 4,
     });
-    expect(program.value[4]).toStrictEqual({
+    expect(program.value[6]).toStrictEqual({
       type: 'number',
       units: undefined,
       value: 0.005,
@@ -88,7 +96,7 @@ describe('expressions', () => {
         value: 'Name',
       },
     });
-    expect(program.value[1]).toStrictEqual({
+    expect(program.value[2]).toStrictEqual({
       arguments: [
         {
           type: 'number',
@@ -102,7 +110,7 @@ describe('expressions', () => {
         value: 'Name',
       },
     });
-    expect(program.value[2]).toStrictEqual({
+    expect(program.value[4]).toStrictEqual({
       arguments: [
         {
           type: 'number',
@@ -126,7 +134,7 @@ describe('expressions', () => {
         value: 'Name',
       },
     });
-    expect(program.value[3]).toStrictEqual({
+    expect(program.value[6]).toStrictEqual({
       arguments: [
         {
           arguments: [
@@ -162,7 +170,7 @@ describe('expressions', () => {
       },
     });
     expect(maapInpParser.toString(program)).toBe(
-      'Name()\nName(1)\nName(1,2,3)\nName(Of(A(Function())))',
+      'Name()\n// One argument\nName(1)\n// Many arguments\nName(1,2,3)\n// Nested calls\nName(Of(A(Function())))',
     );
   });
   test('is expression', async () => {
@@ -178,7 +186,7 @@ describe('expressions', () => {
         value: 'Value',
       },
     });
-    expect(program.value[1]).toStrictEqual({
+    expect(program.value[2]).toStrictEqual({
       target: {
         type: 'parameter_name',
         value: 'START TIME',
@@ -190,7 +198,7 @@ describe('expressions', () => {
         value: 0,
       },
     });
-    expect(program.value[2]).toStrictEqual({
+    expect(program.value[3]).toStrictEqual({
       target: {
         type: 'parameter_name',
         value: 'END TIME',
@@ -202,7 +210,7 @@ describe('expressions', () => {
         value: 144000,
       },
     });
-    expect(program.value[3]).toStrictEqual({
+    expect(program.value[4]).toStrictEqual({
       target: {
         type: 'parameter_name',
         value: 'PRINT INTERVAL',
@@ -215,7 +223,7 @@ describe('expressions', () => {
       },
     });
     expect(maapInpParser.toString(program)).toBe(
-      'VARNAME IS Value\nSTART TIME IS 0\nEND TIME IS 144000\nPRINT INTERVAL IS 5000',
+      'VARNAME IS Value\n// Special IS expressions\nSTART TIME IS 0\nEND TIME IS 144000\nPRINT INTERVAL IS 5000',
     );
   });
 });
@@ -229,16 +237,16 @@ describe('statements', () => {
       type: 'sensitivity',
       value: 'ON',
     });
-    expect(program.value[1]).toStrictEqual({
+    expect(program.value[2]).toStrictEqual({
       type: 'sensitivity',
       value: 'OFF',
     });
-    expect(program.value[2]).toStrictEqual({
+    expect(program.value[5]).toStrictEqual({
       type: 'identifier',
       value: 'SENSITIVITY',
     });
     expect(maapInpParser.toString(program)).toBe(
-      'SENSITIVITY ON\nSENSITIVITY OFF\nSENSITIVITY',
+      'SENSITIVITY ON\n// Alternate value\nSENSITIVITY OFF\n// No value\n// Should parse as an identifier, not a sensitivity statement\nSENSITIVITY',
     );
   });
   test('title statements', async () => {
@@ -247,18 +255,18 @@ describe('statements', () => {
       type: 'title',
       value: 'Valid Title',
     });
-    expect(program.value[1]).toStrictEqual({
+    expect(program.value[2]).toStrictEqual({
       type: 'title',
       value: `A title that
 extends onto
 multiple lines`,
     });
-    expect(program.value[2]).toStrictEqual({
+    expect(program.value[4]).toStrictEqual({
       type: 'title',
       value: undefined,
     });
     expect(maapInpParser.toString(program)).toBe(
-      'TITLE\nValid Title\nEND\nTITLE\nA title that\nextends onto\nmultiple lines\nEND\nTITLE\n\nEND',
+      'TITLE\nValid Title\nEND\n// Many lines\nTITLE\nA title that\nextends onto\nmultiple lines\nEND\n// Empty title\nTITLE\n\nEND',
     );
   });
   test('parameter file statements', async () => {
@@ -268,32 +276,44 @@ multiple lines`,
       type: 'file',
       value: 'parameter_file.PAR',
     });
-    expect(program.value[1]).toStrictEqual({
+    expect(program.value[3]).toStrictEqual({
       fileType: 'PARAMETER FILE',
       type: 'file',
       value: '1',
     });
-    expect(program.value[2]).toStrictEqual({
+    expect(program.value[6]).toStrictEqual({
       type: 'parameter_name',
       value: 'PARAMETER FILE',
     });
-    expect(program.value[3]).toStrictEqual({
+    expect(program.value[8]).toStrictEqual({
       fileType: 'INCLUDE',
       type: 'file',
       value: 'file.inc',
     });
-    expect(program.value[4]).toStrictEqual({
+    expect(program.value[11]).toStrictEqual({
       fileType: 'INCLUDE',
       type: 'file',
       value: '1234',
     });
-    expect(program.value[5]).toStrictEqual({
+    expect(program.value[14]).toStrictEqual({
       type: 'identifier',
       value: 'INCLUDE',
     });
-    expect(maapInpParser.toString(program)).toBe(
-      'PARAMETER FILE parameter_file.PAR\nPARAMETER FILE 1\nPARAMETER FILE\nINCLUDE file.inc\nINCLUDE 1234\nINCLUDE',
-    );
+    expect(maapInpParser.toString(program)).toBe(`PARAMETER FILE parameter_file.PAR
+// Value not resembling a file
+// The parser makes no judgments about what the file path should look like
+PARAMETER FILE 1
+// No file specified
+// Should parse as an identifier
+PARAMETER FILE
+// Default
+INCLUDE file.inc
+// Non-file value
+// The parser makes no judgments about the format of file paths
+INCLUDE 1234
+// Empty
+// Should be parsed as an identifier
+INCLUDE`);
   });
   test('block statements', async () => {
     const program = maapInpParser.parse(await readTestData('block.INP')).output;
@@ -325,12 +345,12 @@ multiple lines`,
         },
       ],
     });
-    expect(program.value[1]).toStrictEqual({
+    expect(program.value[2]).toStrictEqual({
       blockType: 'PARAMETER CHANGE',
       type: 'block',
       value: [],
     });
-    expect(program.value[2]).toStrictEqual({
+    expect(program.value[4]).toStrictEqual({
       blockType: 'PARAMETER CHANGE',
       type: 'block',
       value: [
@@ -371,7 +391,7 @@ multiple lines`,
         },
       ],
     });
-    expect(program.value[3]).toStrictEqual({
+    expect(program.value[6]).toStrictEqual({
       blockType: 'INITIATORS',
       type: 'block',
       value: [
@@ -399,12 +419,12 @@ multiple lines`,
         },
       ],
     });
-    expect(program.value[4]).toStrictEqual({
+    expect(program.value[8]).toStrictEqual({
       blockType: 'INITIATORS',
       type: 'block',
       value: [],
     });
-    expect(program.value[5]).toStrictEqual({
+    expect(program.value[10]).toStrictEqual({
       blockType: 'INITIATORS',
       type: 'block',
       value: [
@@ -448,20 +468,25 @@ multiple lines`,
     expect(maapInpParser.toString(program)).toBe(`PARAMETER CHANGE
 VarName(1) = 1
 END
+// Empty
 PARAMETER CHANGE
 
 END
+// With nested source elements
 PARAMETER CHANGE
 IF VarName(1) IS 1
 SET TIMER #1
 END
 END
+// Default
 INITIATORS
 VarName(1) = 1
 END
+// Empty
 INITIATORS
 
 END
+// With nested source elements
 INITIATORS
 IF VarName(1) IS 1
 SET TIMER #1

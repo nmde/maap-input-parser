@@ -13,4 +13,4 @@ jobs:
       - uses: actions/checkout@v2
       - name: 'Test'
         run: |
-          node --experimental-vm-modules .yarn/releases/yarn-3.2.1.cjs jest
+          yarn jest

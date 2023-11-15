@@ -316,7 +316,10 @@ function peg$parse(input, options) {
   var peg$e70 = peg$literalExpectation("=", false);
 
   var peg$f0 = function(program) {
+  	// Switch the comments on the following lines to disable locations for debugging
+
   	return program;
+  	// return stripLocations(program);
   };
   var peg$f1 = function(v) {
   	return {
@@ -2523,6 +2526,52 @@ function peg$parse(input, options) {
     return s0;
   }
 
+  function peg$parseSpaceAssignment() {
+    var s0, s1, s2, s3, s4;
+
+    s0 = peg$currPos;
+    s1 = peg$parseCallExpression();
+    if (s1 === peg$FAILED) {
+      s1 = peg$parseIdentifier();
+    }
+    if (s1 !== peg$FAILED) {
+      s2 = peg$parseWhiteSpace();
+      if (s2 !== peg$FAILED) {
+        s3 = [];
+        s4 = peg$parseWhiteSpace();
+        if (s4 !== peg$FAILED) {
+          while (s4 !== peg$FAILED) {
+            s3.push(s4);
+            s4 = peg$parseWhiteSpace();
+          }
+        } else {
+          s3 = peg$FAILED;
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = peg$parseExpr();
+          if (s4 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s0 = peg$f17(s1, s4);
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+    } else {
+      peg$currPos = s0;
+      s0 = peg$FAILED;
+    }
+
+    return s0;
+  }
+
   function peg$parseAssignment() {
     var s0, s1, s2, s3, s4, s5;
 
@@ -3717,23 +3766,26 @@ function peg$parse(input, options) {
 
     s0 = peg$parseStatement();
     if (s0 === peg$FAILED) {
-      s0 = peg$parseAssignment();
+      s0 = peg$parseSpaceAssignment();
       if (s0 === peg$FAILED) {
-        s0 = peg$parseAsExpression();
+        s0 = peg$parseAssignment();
         if (s0 === peg$FAILED) {
-          s0 = peg$parseIsExpression();
+          s0 = peg$parseAsExpression();
           if (s0 === peg$FAILED) {
-            s0 = peg$parseExpression();
+            s0 = peg$parseIsExpression();
             if (s0 === peg$FAILED) {
-              s0 = peg$parseCallExpression();
+              s0 = peg$parseExpression();
               if (s0 === peg$FAILED) {
-                s0 = peg$parseExpressionBlock();
+                s0 = peg$parseCallExpression();
                 if (s0 === peg$FAILED) {
-                  s0 = peg$parseParameterName();
+                  s0 = peg$parseExpressionBlock();
                   if (s0 === peg$FAILED) {
-                    s0 = peg$parseLiteral();
+                    s0 = peg$parseParameterName();
                     if (s0 === peg$FAILED) {
-                      s0 = peg$parseIdentifier();
+                      s0 = peg$parseLiteral();
+                      if (s0 === peg$FAILED) {
+                        s0 = peg$parseIdentifier();
+                      }
                     }
                   }
                 }
@@ -3753,6 +3805,15 @@ function peg$parse(input, options) {
       }
       function safeValue(value) {
       	return (value || [])[0] || [];
+      }
+      function stripLocations(o) {
+        if (o) {
+          delete o.location;
+        }
+        if (typeof o === 'object') {
+          Object.values(o).forEach((v) => stripLocations(v));
+        }
+        return o;
       }
 
 

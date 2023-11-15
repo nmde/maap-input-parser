@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "description": "Syntax parser for MAAP INP files",
   "main": "dist/maap-inp-parser.js",
-  "packageManager": "yarn@3.2.1",
   "scripts": {
-    "test": "node --experimental-vm-modules .yarn/releases/yarn-3.2.1.cjs jest",
-    "build": "node .yarn/releases/yarn-3.2.1.cjs gulp build"
+    "test": "yarn jest",
+    "build": "yarn gulp build"
   },
   "repository": {
     "type": "git",
